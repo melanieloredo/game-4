@@ -1,0 +1,11 @@
+{
+    "type": "regular_bg",
+    "regular_bg": [
+        {
+            "id": "room1_bg",
+            "graphics_file": "room1_bg.bmp",
+            "bpp_mode": "8",
+            "compression": "none"
+        }
+    ]
+}
