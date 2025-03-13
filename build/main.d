@@ -1,4 +1,4 @@
-main.o: C:/Users/lored/Documents/GBA-games-Projects/game-2/src/main.cpp \
+main.o: C:/Users/lored/Documents/GBA-games-Projects/game-3/src/main.cpp \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_core.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_span.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_array.h \
@@ -40,25 +40,25 @@ main.o: C:/Users/lored/Documents/GBA-games-Projects/game-2/src/main.cpp \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_bpp_mode.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_compression_type.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_animate_actions_fwd.h \
- C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sprite_items_ninja.h \
+ C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sprite_items_ninja.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_item.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_shape_size.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_palette_item.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_color.h \
- C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sprite_items_lamb.h \
- C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sprite_items_coin_animated.h \
+ C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sprite_items_lamb.h \
+ C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sprite_items_coin_animated.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_random.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_math.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sin_lut.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_reciprocal_lut.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_rule_of_three_approximation.h \
- C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sound_items.h \
+ C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sound_items.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sound_item.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sound_handle.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_position_hbe_ptr.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_ptr.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_hbe_ptr.h \
- C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_regular_bg_items_room1_bg.h \
+ C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_regular_bg_items_room1_bg.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_item.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_bg_palette_item.h \
  C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_map_item.h \
@@ -106,25 +106,25 @@ C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_tile.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_bpp_mode.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_compression_type.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_animate_actions_fwd.h:
-C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sprite_items_ninja.h:
+C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sprite_items_ninja.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_item.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_shape_size.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sprite_palette_item.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_color.h:
-C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sprite_items_lamb.h:
-C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sprite_items_coin_animated.h:
+C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sprite_items_lamb.h:
+C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sprite_items_coin_animated.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_random.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_math.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sin_lut.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_reciprocal_lut.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_rule_of_three_approximation.h:
-C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_sound_items.h:
+C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_sound_items.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sound_item.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_sound_handle.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_position_hbe_ptr.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_ptr.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_hbe_ptr.h:
-C:/Users/lored/Documents/GBA-games-Projects/game-2/build/bn_regular_bg_items_room1_bg.h:
+C:/Users/lored/Documents/GBA-games-Projects/game-3/build/bn_regular_bg_items_room1_bg.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_item.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_bg_palette_item.h:
 C:/Users/lored/Documents/butano-18.7.1/butano/include/bn_regular_bg_map_item.h:
