@@ -21,7 +21,9 @@ struct Hitbox {
 void sprites_animation_actions_scene() {
     bn::random random_generator;
 
-    bn::regular_bg_ptr bg = bn::regular_bg_items::room1_bg.create_bg(0, 0);
+    bn::regular_bg_ptr bg = bn::regular_bg_items::room1_bg.create_bg(0, 0); //generate room1
+    bg.set_mosaic_enabled(true); //room1 mosaic to handle big backgrounds
+    //bg.set_priority(0);
     
     bn::sprite_ptr lamb_sprite = bn::sprite_items::lamb.create_sprite(0, 0);
     lamb_sprite.set_scale(1);
@@ -38,7 +40,7 @@ void sprites_animation_actions_scene() {
     );
 
     Hitbox ninja_hitbox = {ninja_sprite.x(), ninja_sprite.y(), 16, 16};
-    Hitbox rock_hitbox = {bn::fixed(-32), bn::fixed(24), 16, 16};
+    Hitbox rock_hitbox = {bn::fixed(-32), bn::fixed(24), 16, 16}; //rock collison change to grass & stake collisions
     Hitbox coin_hitbox = {coin_sprite.x(), coin_sprite.y(), 16, 16};
 
     bn::optional<bn::sprite_animate_action<4>> lamb_action;
@@ -84,7 +86,7 @@ void sprites_animation_actions_scene() {
                 lamb_sprite.set_x(new_lamb_x);
                 lamb_sprite.set_y(new_lamb_y);
                 lamb_moving = true;
-            }
+            } 
         }
 
         // Ninja movement logic update
@@ -111,14 +113,14 @@ void sprites_animation_actions_scene() {
             bn::fixed new_ninja_y = ninja_sprite.y() + ninja_dy;
             Hitbox new_ninja_hitbox = {new_ninja_x, new_ninja_y, ninja_hitbox.width, ninja_hitbox.height};
             
-            if (!new_ninja_hitbox.collides(rock_hitbox)) {
+           if (!new_ninja_hitbox.collides(rock_hitbox)) {
                 ninja_sprite.set_x(new_ninja_x);
                 ninja_sprite.set_y(new_ninja_y);
                 ninja_hitbox = new_ninja_hitbox;
                 ninja_moving = true;
             } else {
                 collided = true;
-            }
+            } 
 
             if (collided) {
                 if (ninja_dx != 0) {
