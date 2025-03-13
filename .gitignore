@@ -1,1 +1,17 @@
+# Ignore Visual Studio files
+.vs/
+*.user
+*.suo
+*.cache
+*.ilk
+*.pdb
+*.obj
+*.ipch
+*.tlog
+*.log
+
+# Ignore build directories
 build/
+
+# Ignore VS Code settings
+.vscode/
