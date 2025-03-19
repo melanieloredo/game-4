@@ -12,10 +12,10 @@ public:
     Coin(int x, int y);
 
     void update_animation();
-    void respawn(bn::random& random_generator, const bn::vector<Hitbox, 10>& obstacles); // Updated signature
-
+    void respawn(bn::random& random_generator, const bn::vector<Hitbox, 10>& obstacles); 
+    
     Hitbox get_hitbox() const;
-    const bn::sprite_ptr& get_sprite() const; // Ensure const reference return type
+    const bn::sprite_ptr& get_sprite() const; 
 
 private:
     bn::sprite_ptr sprite;

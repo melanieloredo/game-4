@@ -12,6 +12,7 @@
 #include "../include/player.h"
 #include "../include/coin.h"
 #include "../include/cloak.h"
+#include "bn_sound_items.h"
 
 void sprites_animation_actions_scene() {
     bn::random random_generator;
@@ -23,7 +24,7 @@ void sprites_animation_actions_scene() {
     // Create player, enemy, and coin objects
     Player lamb(0, 0, bn::sprite_items::lamb);
     Cloak cloak(40, 40, bn::sprite_items::cloak);
-    Coin coin(random_generator.get_int(-110, 110), random_generator.get_int(-80, 80));
+    Coin coin(0, 0); // Temporary position, will respawn
 
     // Define map obstacles and borders
     bn::vector<Hitbox, 10> obstacles;
@@ -38,7 +39,7 @@ void sprites_animation_actions_scene() {
     obstacles.push_back(Hitbox{ 0, -128, 512, 10});  // Top border
     obstacles.push_back(Hitbox{ 0,  128, 512, 10});  // Bottom border
 
-    // Ensure coin spawns away from obstacles and border
+    // Ensure coin spawns away from obstacles and borders
     coin.respawn(random_generator, obstacles);
 
     while (!bn::keypad::start_pressed()) {
@@ -47,12 +48,14 @@ void sprites_animation_actions_scene() {
         lamb.update(obstacles);
         cloak.update(coin.get_sprite(), obstacles);
 
-        // Collision logic
+        // **Collision logic with sound effect**
         if (cloak.get_hitbox().collides(coin.get_hitbox())) {
+            bn::sound_items::coin.play(); // Play coin collection sound
             coin.respawn(random_generator, obstacles);
             cloak.increase_score();
         }
         if (lamb.get_hitbox().collides(coin.get_hitbox())) {
+            bn::sound_items::coin.play(); // Play coin collection sound
             coin.respawn(random_generator, obstacles);
             lamb.increase_score();
         }

@@ -21,12 +21,11 @@ void Coin::respawn(bn::random& random_generator, const bn::vector<Hitbox, 10>& o
         bn::fixed new_y = random_generator.get_int(-80, 80);
         Hitbox new_coin_hitbox = {new_x, new_y, hitbox.width, hitbox.height};
 
-        // Check if new position collides with any obstacles
         valid_position = true;
         for (const Hitbox& obstacle : obstacles) {
             if (new_coin_hitbox.collides(obstacle)) {
                 valid_position = false;
-                break;  // Retry spawning
+                break; 
             }
         }
 
