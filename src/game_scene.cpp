@@ -21,7 +21,7 @@ void sprites_animation_actions_scene() {
     bn::regular_bg_ptr bg = bn::regular_bg_items::room1_bg.create_bg(0, 0);
     bg.set_mosaic_enabled(true);
 
-    // Create player, enemy, and coin objects
+    // Create player and cloak (enemy)
     Player lamb(0, 0, bn::sprite_items::lamb);
     Cloak cloak(40, 40, bn::sprite_items::cloak);
     Coin coin(0, 0); // Temporary position, will respawn
@@ -46,14 +46,9 @@ void sprites_animation_actions_scene() {
         // Update animations
         coin.update_animation();
         lamb.update(obstacles);
-        cloak.update(coin.get_sprite(), obstacles);
+        cloak.update(lamb.get_sprite(), obstacles);
 
-        // **Collision logic with sound effect**
-        if (cloak.get_hitbox().collides(coin.get_hitbox())) {
-            bn::sound_items::coin.play(); // Play coin collection sound
-            coin.respawn(random_generator, obstacles);
-            cloak.increase_score();
-        }
+        // **Collision logic (only player collects coins)**
         if (lamb.get_hitbox().collides(coin.get_hitbox())) {
             bn::sound_items::coin.play(); // Play coin collection sound
             coin.respawn(random_generator, obstacles);
