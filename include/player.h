@@ -13,6 +13,7 @@ public:
     void update(const bn::vector<Hitbox, 10>& obstacles);
     Hitbox get_hitbox() const;
     void increase_score();
+    const bn::sprite_ptr& get_sprite() const { return sprite; }
 
 private:
     bn::sprite_ptr sprite;
