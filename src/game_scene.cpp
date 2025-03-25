@@ -13,18 +13,26 @@
 #include "../include/coin.h"
 #include "../include/cloak.h"
 #include "bn_sound_items.h"
+#include "bn_camera_actions.h"
 
 void sprites_animation_actions_scene() {
     bn::random random_generator;
+    bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
 
     // Load background
     bn::regular_bg_ptr bg = bn::regular_bg_items::room1_bg.create_bg(0, 0);
     bg.set_mosaic_enabled(true);
+    bg.set_camera(camera);
 
     // Create player and cloak (enemy)
     Player lamb(0, 0, bn::sprite_items::lamb);
+    lamb.set_camera(camera);
+
     Cloak cloak(40, 40, bn::sprite_items::cloak);
+    // cloak.set_camera(camera);
+
     Coin coin(0, 0); // Temporary position, will respawn
+    // coin.set_camera(camera);
 
     // Define map obstacles and borders
     bn::vector<Hitbox, 10> obstacles;
@@ -46,6 +54,8 @@ void sprites_animation_actions_scene() {
         // Update animations
         coin.update_animation();
         lamb.update(obstacles);
+        camera.set_x(lamb.get_sprite().x());
+        camera.set_y(lamb.get_sprite().y());
         cloak.update(lamb.get_sprite(), obstacles);
 
         // **Collision logic (only player collects coins)**
