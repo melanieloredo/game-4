@@ -46,7 +46,10 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
             pause_timer = 300;
         }
 
-        /// Stop animation and set to first frame when dashing
+        // Stop animation and set to first frame when dashing
+        if (animation.has_value()) {
+            animation.reset();
+        }
         sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0);  // Use the first frame (frame 0)
         return;
     }
@@ -70,6 +73,14 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
         move_in_direction(move_dx, move_dy, 1, obstacles);
 
         // Set animation if not already set and not dashing
+        if (!animation.has_value()) {
+            animation = bn::create_sprite_animate_action_forever(
+                sprite, 10, bn::sprite_items::bat.tiles_item(),
+                0, 1, 2, 3  // The 4 frames of the animation
+            );
+        }
+    } else {
+        // If the bat is not moving, continue the animation if it's not already playing
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
                 sprite, 10, bn::sprite_items::bat.tiles_item(),
