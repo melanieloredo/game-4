@@ -6,7 +6,10 @@
 #include "bn_fixed.h"
 #include "bn_vector.h"
 #include "bn_optional.h"
+#include "bn_sprite_animate_actions.h"
+#include "bn_sprite_items_bat.h"
 #include "hitbox.h"
+
 
 class Bat {
 public:
@@ -30,6 +33,9 @@ private:
     bn::fixed dash_direction_y;
     bn::fixed dash_speed;
     bn::fixed fly_speed;
+
+    // Declare the animation field
+    bn::optional<bn::sprite_animate_action<4>> animation;
 
     void move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const bn::vector<Hitbox, 10>& obstacles);
 };
