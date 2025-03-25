@@ -1,5 +1,7 @@
 #include "../include/bat.h"
 #include "bn_math.h"
+#include "bn_sprite_animate_actions.h"
+#include "bn_sprite_items_bat.h"  // Required for animations
 
 Bat::Bat(int x, int y, const bn::sprite_item& item)
     : sprite(item.create_sprite(x, y)),
@@ -13,7 +15,8 @@ Bat::Bat(int x, int y, const bn::sprite_item& item)
       dash_direction_x(0),
       dash_direction_y(0),
       dash_speed(2.0),
-      fly_speed(0.5) {}
+      fly_speed(0.5),
+      animation(bn::nullopt) {}
 
 void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obstacles) {
     if (pause_timer > 0) {
@@ -42,6 +45,12 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
             is_dashing = false;
             pause_timer = 300;
         }
+
+        // Stop animation and set to first frame when dashing
+        if (animation.has_value()) {
+            animation.reset();
+        }
+        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0);  // Use the first frame (frame 0)
         return;
     }
 
@@ -62,6 +71,26 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
         bn::fixed move_dx = (dx / distance) * fly_speed;
         bn::fixed move_dy = (dy / distance) * fly_speed;
         move_in_direction(move_dx, move_dy, 1, obstacles);
+
+        // Set animation if not already set and not dashing
+        if (!animation.has_value()) {
+            animation = bn::create_sprite_animate_action_forever(
+                sprite, 10, bn::sprite_items::bat.tiles_item(),
+                0, 1, 2, 3  // The 4 frames of the animation
+            );
+        }
+    } else {
+        // If the bat is not moving, continue the animation if it's not already playing
+        if (!animation.has_value()) {
+            animation = bn::create_sprite_animate_action_forever(
+                sprite, 10, bn::sprite_items::bat.tiles_item(),
+                0, 1, 2, 3  // The 4 frames of the animation
+            );
+        }
+    }
+    
+    if (animation.has_value()) {
+        animation->update();  // Update the animation if it's active
     }
 }
 
