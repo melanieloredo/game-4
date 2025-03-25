@@ -29,10 +29,10 @@ void sprites_animation_actions_scene() {
     lamb.set_camera(camera);
 
     Cloak cloak(40, 40, bn::sprite_items::cloak);
-    // cloak.set_camera(camera);
+    cloak.set_camera(camera);
 
     Coin coin(0, 0); // Temporary position, will respawn
-    // coin.set_camera(camera);
+    coin.set_camera(camera);
 
     // Define map obstacles and borders
     bn::vector<Hitbox, 10> obstacles;
