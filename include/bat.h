@@ -15,6 +15,7 @@ public:
 
     void update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles);
     const Hitbox& get_hitbox() const;
+    bn::sprite_ptr& get_sprite();
 
 private:
     bn::sprite_ptr sprite;

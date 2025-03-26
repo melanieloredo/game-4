@@ -90,6 +90,8 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
     if (animation.has_value()) {
         animation->update();
     }
+
+    sprite.remove_camera();
 }
 
 void Bat::move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const bn::vector<Hitbox, 10>& obstacles) {
@@ -107,4 +109,8 @@ void Bat::move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const b
 
 const Hitbox& Bat::get_hitbox() const {
     return hitbox;
+}
+
+bn::sprite_ptr& Bat::get_sprite() {
+    return sprite;
 }

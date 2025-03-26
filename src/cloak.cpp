@@ -1,15 +1,15 @@
 #include "../include/cloak.h"
 #include "bn_math.h"
-#include "bn_sprite_animate_actions.h"
 #include "bn_sprite_items_cloak.h"
 
 Cloak::Cloak(int x, int y, const bn::sprite_item& item)
     : sprite(item.create_sprite(x, y)),
       hitbox{x, y, 16, 16},
       last_direction(3),
-      animation(bn::nullopt),
-      chasing_player(false) {
-    sprite.remove_camera();
+      chasing_player(false),
+      animation(bn::nullopt)
+{
+    sprite.remove_camera();  // Important: Detach from camera
 }
 
 void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
@@ -27,6 +27,7 @@ void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitb
         if (animation.has_value()) {
             animation.reset();
         }
+
         int idle_frame = (last_direction == 0) ? 8
                        : (last_direction == 1) ? 12
                        : (last_direction == 2) ? 4
@@ -44,8 +45,8 @@ void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitb
     if (!new_position.collides_any(obstacles)) {
         sprite.set_x(new_position.x);
         sprite.set_y(new_position.y);
-        hitbox.x = sprite.x();
-        hitbox.y = sprite.y();
+        hitbox.x = new_position.x;
+        hitbox.y = new_position.y;
 
         int new_direction = (bn::abs(dx) > bn::abs(dy)) ? ((dx > 0) ? 1 : 0)
                                                         : ((dy > 0) ? 3 : 2);
@@ -63,7 +64,10 @@ void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitb
 
             last_direction = new_direction;
         }
-        animation->update();
+
+        if (animation.has_value()) {
+            animation->update();
+        }
     } else {
         if (animation.has_value()) {
             animation.reset();
@@ -74,10 +78,12 @@ void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitb
                        : 0;
         sprite.set_tiles(bn::sprite_items::cloak.tiles_item(), idle_frame);
     }
-
-    sprite.remove_camera();
 }
 
 const Hitbox& Cloak::get_hitbox() const {
     return hitbox;
+}
+
+bn::sprite_ptr& Cloak::get_sprite() {
+    return sprite;
 }

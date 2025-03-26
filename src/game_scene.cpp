@@ -1,4 +1,3 @@
-// game_scene.cpp
 #include "../include/game_scene.h"
 #include "bn_core.h"
 #include "bn_keypad.h"
@@ -32,11 +31,12 @@ void sprites_animation_actions_scene() {
     Player lamb(0, 0, bn::sprite_items::lamb);
     lamb.set_camera(camera);
 
-    // Create enemies (remove camera association)
+    // Create enemies (no camera assigned)
     Cloak cloak(40, 40, bn::sprite_items::cloak);
-    cloak.get_sprite().remove_camera();
-
     Bat bat(-50, 50, bn::sprite_items::bat);
+
+    // Ensure enemies are not tied to camera
+    cloak.get_sprite().remove_camera();
     bat.get_sprite().remove_camera();
 
     // Create coin
@@ -63,8 +63,8 @@ void sprites_animation_actions_scene() {
         // Update camera using camera system
         camera_system::update_camera(camera, lamb.get_sprite().position());
 
-        // Update enemies using their own logic (independent of player movement)
-        bn::fixed_point player_world_pos = lamb.get_sprite().position();
+        // Update enemies with world position, not affected by camera
+        const bn::fixed_point player_world_pos = lamb.get_sprite().position();
         cloak.update(player_world_pos, obstacles);
         bat.update(player_world_pos, obstacles);
 
