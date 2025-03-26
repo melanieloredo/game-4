@@ -1,12 +1,43 @@
 #include "../include/player.h"
 #include "bn_keypad.h"
-#include "bn_sprite_animate_actions.h"
-#include "bn_sprite_items_lamb.h" // Required for animations
+#include "bn_sprite_items_lamb.h"
+#include "bn_sprite_items_lambattk.h"
 
-Player::Player(int x, int y, const bn::sprite_item& item)
-    : sprite(item.create_sprite(x, y)), hitbox{x, y, 16, 16}, last_direction(3), score(0), animation(bn::nullopt) {}
+Player::Player(int x, int y, const bn::sprite_item& idle_item, const bn::sprite_item& attack_item)
+    : sprite(idle_item.create_sprite(x, y)),
+      idle_sprite_item(idle_item),
+      attack_sprite_item(attack_item),
+      hitbox{x, y, 16, 16},
+      attack_hitbox{x, y, 16, 16},
+      last_direction(3),
+      score(0),
+      is_attacking(false),
+      attack_timer(0),
+      animation(bn::nullopt) {}
 
 void Player::update(const bn::vector<Hitbox, 10>& obstacles) {
+    if (is_attacking) {
+        update_attack_hitbox();
+        if (attack_timer > 0) {
+            --attack_timer;
+        } else {
+            is_attacking = false;
+
+            int idle_frame = (last_direction == 0) ? 8
+                           : (last_direction == 1) ? 12
+                           : (last_direction == 2) ? 4
+                           : 0;
+
+            sprite.set_tiles(idle_sprite_item.tiles_item(), idle_frame);
+        }
+        return;
+    }
+
+    if (bn::keypad::a_pressed()) {
+        attack();
+        return;
+    }
+
     bool move_left = bn::keypad::left_held();
     bool move_right = bn::keypad::right_held();
     bool move_up = bn::keypad::up_held();
@@ -25,16 +56,15 @@ void Player::update(const bn::vector<Hitbox, 10>& obstacles) {
     bn::fixed dx = (move_right - move_left);
     bn::fixed dy = (move_down - move_up);
 
-    // If no movement input, stop animation and reset sprite to idle frame
     if (dx == 0 && dy == 0) {
         if (animation.has_value()) {
             animation.reset();
         }
-        int idle_frame = (last_direction == 0) ? 8   // Left
-                       : (last_direction == 1) ? 12  // Right
-                       : (last_direction == 2) ? 4   // Up
-                       : 0;                          // Down
-        sprite.set_tiles(bn::sprite_items::lamb.tiles_item(), idle_frame);
+        int idle_frame = (last_direction == 0) ? 8
+                       : (last_direction == 1) ? 12
+                       : (last_direction == 2) ? 4
+                       : 0;
+        sprite.set_tiles(idle_sprite_item.tiles_item(), idle_frame);
         return;
     }
 
@@ -47,19 +77,21 @@ void Player::update(const bn::vector<Hitbox, 10>& obstacles) {
         hitbox.y = sprite.y();
 
         if (lamb_new_direction != last_direction || !animation.has_value()) {
-            int start_frame = (lamb_new_direction == 0) ? 8   // Left
-                            : (lamb_new_direction == 1) ? 12  // Right
-                            : (lamb_new_direction == 2) ? 4   // Up
-                            : 0; // Down
+            int start_frame = (lamb_new_direction == 0) ? 8
+                            : (lamb_new_direction == 1) ? 12
+                            : (lamb_new_direction == 2) ? 4
+                            : 0;
 
             animation = bn::create_sprite_animate_action_forever(
-                sprite, 6, bn::sprite_items::lamb.tiles_item(),
+                sprite, 6, idle_sprite_item.tiles_item(),
                 start_frame, start_frame + 1, start_frame + 2, start_frame + 3
             );
 
             last_direction = lamb_new_direction;
         }
-        animation->update();
+        if (animation.has_value()) {
+            animation->update();
+        }
     } else {
         if (animation.has_value()) {
             animation.reset();
@@ -68,12 +100,42 @@ void Player::update(const bn::vector<Hitbox, 10>& obstacles) {
                        : (last_direction == 1) ? 12
                        : (last_direction == 2) ? 4
                        : 0;
-        sprite.set_tiles(bn::sprite_items::lamb.tiles_item(), idle_frame);
+        sprite.set_tiles(idle_sprite_item.tiles_item(), idle_frame);
     }
+}
+
+void Player::attack() {
+    is_attacking = true;
+    attack_timer = 20;
+    update_attack_hitbox();
+
+    int frame = 0;
+    if (last_direction == 2)      frame = 1;  // Up
+    else if (last_direction == 3) frame = 0;  // Down
+    else if (last_direction == 0) frame = 2;  // Left
+    else if (last_direction == 1) frame = 3;  // Right
+
+    sprite.set_tiles(attack_sprite_item.tiles_item(), frame);
+}
+
+void Player::update_attack_hitbox() {
+    bn::fixed ax = sprite.x();
+    bn::fixed ay = sprite.y();
+
+    if (last_direction == 0) { ax -= 16; }     // Left
+    else if (last_direction == 1) { ax += 16; } // Right
+    else if (last_direction == 2) { ay -= 16; } // Up
+    else if (last_direction == 3) { ay += 16; } // Down
+
+    attack_hitbox = {ax, ay, 16, 16};
 }
 
 Hitbox Player::get_hitbox() const {
     return hitbox;
+}
+
+Hitbox Player::get_attack_hitbox() const {
+    return attack_hitbox;
 }
 
 void Player::increase_score() {
