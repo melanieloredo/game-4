@@ -7,10 +7,7 @@ Cloak::Cloak(int x, int y, const bn::sprite_item& item)
       hitbox{x, y, 16, 16},
       last_direction(3),
       chasing_player(false),
-      animation(bn::nullopt)
-{
-    sprite.remove_camera();  // Important: Detach from camera
-}
+      animation(bn::nullopt){};
 
 void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
     bn::fixed dx = target_position.x() - sprite.x();

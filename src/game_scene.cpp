@@ -25,7 +25,7 @@ void sprites_animation_actions_scene() {
     // Load background
     bn::regular_bg_ptr bg = bn::regular_bg_items::room1_bg.create_bg(0, 0);
     bg.set_mosaic_enabled(true);
-    bg.set_camera(camera);
+    bg.set_camera(camera); // adding bg to camera so it moves with it DO NOT TOUCH
 
     // Create player
     Player lamb(0, 0, bn::sprite_items::lamb);
@@ -33,15 +33,14 @@ void sprites_animation_actions_scene() {
 
     // Create enemies (no camera assigned)
     Cloak cloak(40, 40, bn::sprite_items::cloak);
-    Bat bat(-50, 50, bn::sprite_items::bat);
+    cloak.set_camera(camera); // adding cloak to camera so it moves with it DO NOT TOUCH
 
-    // Ensure enemies are not tied to camera
-    cloak.get_sprite().remove_camera();
-    bat.get_sprite().remove_camera();
+    Bat bat(-50, 50, bn::sprite_items::bat);
+    bat.set_camera(camera); // adding bat to camera so it moves with it DO NOT TOUCH
 
     // Create coin
     Coin coin(0, 0); // Temporary position, will respawn
-    coin.set_camera(camera);
+    coin.set_camera(camera); // adding coin to camera so it moves with it DO NOT TOUCH
 
     // Define map obstacles and borders
     bn::vector<Hitbox, 10> obstacles;
@@ -61,7 +60,7 @@ void sprites_animation_actions_scene() {
         lamb.update(obstacles);
 
         // Update camera using camera system
-        camera_system::update_camera(camera, lamb.get_sprite().position());
+        camera_system::update_camera(camera, lamb.get_sprite().position()); // better than original solution :)
 
         // Update enemies with world position, not affected by camera
         const bn::fixed_point player_world_pos = lamb.get_sprite().position();

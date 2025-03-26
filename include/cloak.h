@@ -8,6 +8,7 @@
 #include "bn_optional.h"
 #include "bn_sprite_animate_actions.h"
 #include "hitbox.h"
+#include "bn_camera_actions.h"
 
 class Cloak {
 public:
@@ -16,6 +17,7 @@ public:
     void update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles);
     const Hitbox& get_hitbox() const;
     bn::sprite_ptr& get_sprite();  // Added so game_scene can call remove_camera()
+    void set_camera(bn::camera_ptr& camera) {sprite.set_camera(camera);}
 
 private:
     bn::sprite_ptr sprite;

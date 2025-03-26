@@ -16,9 +16,7 @@ Bat::Bat(int x, int y, const bn::sprite_item& item)
       dash_direction_y(0),
       dash_speed(2.0),
       fly_speed(0.5),
-      animation(bn::nullopt) {
-    sprite.remove_camera();
-}
+      animation(bn::nullopt) {}
 
 void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
     if (pause_timer > 0) {
@@ -90,8 +88,6 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
     if (animation.has_value()) {
         animation->update();
     }
-
-    sprite.remove_camera();
 }
 
 void Bat::move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const bn::vector<Hitbox, 10>& obstacles) {
