@@ -5,6 +5,7 @@
 #include "bn_regular_bg_items_room1_bg.h"
 #include "bn_regular_bg_ptr.h"
 #include "bn_sprite_items_lamb.h"
+#include "bn_sprite_items_lambattk.h" // ✅ updated to match your BMP filename
 #include "bn_sprite_items_cloak.h"
 #include "bn_sprite_items_coin_animated.h"
 #include "bn_sprite_items_bat.h"
@@ -27,8 +28,8 @@ void sprites_animation_actions_scene() {
     bg.set_mosaic_enabled(true);
     bg.set_camera(camera); // adding bg to camera so it moves with it DO NOT TOUCH
 
-    // Create player
-    Player lamb(0, 0, bn::sprite_items::lamb);
+    // Create player with idle and attack sprite sheets
+    Player lamb(0, 0, bn::sprite_items::lamb, bn::sprite_items::lambattk); // ✅ updated here
     lamb.set_camera(camera);
 
     // Create enemies (no camera assigned)
@@ -54,18 +55,42 @@ void sprites_animation_actions_scene() {
     // Ensure coin spawns away from obstacles and borders
     coin.respawn(random_generator, obstacles);
 
+    // Enemy active state
+    bool cloak_alive = true;
+    bool bat_alive = true;
+
     while (!bn::keypad::start_pressed()) {
         // Update coin animation and player
         coin.update_animation();
         lamb.update(obstacles);
 
         // Update camera using camera system
-        camera_system::update_camera(camera, lamb.get_sprite().position()); // better than original solution :)
+        camera_system::update_camera(camera, lamb.get_sprite().position());
 
-        // Update enemies with world position, not affected by camera
-        const bn::fixed_point player_world_pos = lamb.get_sprite().position();
-        cloak.update(player_world_pos, obstacles);
-        bat.update(player_world_pos, obstacles);
+        // Get player's attack hitbox
+        const Hitbox& atk_hitbox = lamb.get_attack_hitbox();
+
+        // Cloak logic
+        if (cloak_alive) {
+            cloak.update(lamb.get_sprite().position(), obstacles);
+
+            if (lamb.is_attacking_now() && atk_hitbox.collides(cloak.get_hitbox())) {
+                cloak.get_sprite().set_visible(false);
+                cloak_alive = false;
+                // Optional: play a sound
+            }
+        }
+
+        // Bat logic
+        if (bat_alive) {
+            bat.update(lamb.get_sprite().position(), obstacles);
+
+            if (lamb.is_attacking_now() && atk_hitbox.collides(bat.get_hitbox())) {
+                bat.get_sprite().set_visible(false);
+                bat_alive = false;
+                // Optional: play a sound
+            }
+        }
 
         // Player collects coin
         if (lamb.get_hitbox().collides(coin.get_hitbox())) {
