@@ -2,7 +2,8 @@
 // Import your sprite items here
 #include "bn_regular_bg_items_title_bg.h" //title bg
 #include "bn_regular_bg_items_logo.h" //logo bg (animated)
-//#include "bn_regular_bg_items_logo.h"
+#include "bn_sprite_items_play_button.h" //play button
+
 #include "bn_sprite_ptr.h"
 #include "bn_fixed.h"
 #include "bn_math.h"
