@@ -1,7 +1,7 @@
 #include "../include/bat.h"
 #include "bn_math.h"
 #include "bn_sprite_animate_actions.h"
-#include "bn_sprite_items_bat.h"  // Required for animations
+#include "bn_sprite_items_bat.h"
 
 Bat::Bat(int x, int y, const bn::sprite_item& item)
     : sprite(item.create_sprite(x, y)),
@@ -18,7 +18,7 @@ Bat::Bat(int x, int y, const bn::sprite_item& item)
       fly_speed(0.5),
       animation(bn::nullopt) {}
 
-void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obstacles) {
+void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
     if (pause_timer > 0) {
         --pause_timer;
         return;
@@ -33,8 +33,8 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
         return;
     }
 
-    bn::fixed dx = target.x() - sprite.x();
-    bn::fixed dy = target.y() - sprite.y();
+    bn::fixed dx = target_position.x() - sprite.x();
+    bn::fixed dy = target_position.y() - sprite.y();
     bn::fixed distance = bn::sqrt(dx * dx + dy * dy);
 
     if (is_dashing) {
@@ -46,11 +46,11 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
             pause_timer = 300;
         }
 
-        // Stop animation and set to first frame when dashing
         if (animation.has_value()) {
             animation.reset();
         }
-        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0);  // Use the first frame (frame 0)
+
+        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0);
         return;
     }
 
@@ -72,25 +72,21 @@ void Bat::update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obs
         bn::fixed move_dy = (dy / distance) * fly_speed;
         move_in_direction(move_dx, move_dy, 1, obstacles);
 
-        // Set animation if not already set and not dashing
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
-                sprite, 10, bn::sprite_items::bat.tiles_item(),
-                0, 1, 2, 3  // The 4 frames of the animation
+                sprite, 10, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
             );
         }
     } else {
-        // If the bat is not moving, continue the animation if it's not already playing
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
-                sprite, 10, bn::sprite_items::bat.tiles_item(),
-                0, 1, 2, 3  // The 4 frames of the animation
+                sprite, 10, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
             );
         }
     }
-    
+
     if (animation.has_value()) {
-        animation->update();  // Update the animation if it's active
+        animation->update();
     }
 }
 
@@ -109,4 +105,8 @@ void Bat::move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const b
 
 const Hitbox& Bat::get_hitbox() const {
     return hitbox;
+}
+
+bn::sprite_ptr& Bat::get_sprite() {
+    return sprite;
 }

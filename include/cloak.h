@@ -2,24 +2,28 @@
 #define CLOAK_H
 
 #include "bn_sprite_ptr.h"
+#include "bn_sprite_item.h"
+#include "bn_fixed_point.h"
+#include "bn_vector.h"
 #include "bn_optional.h"
 #include "bn_sprite_animate_actions.h"
-#include "bn_sprite_items_cloak.h"
-#include "../include/hitbox.h"
+#include "hitbox.h"
+#include "bn_camera_actions.h"
 
 class Cloak {
 public:
     Cloak(int x, int y, const bn::sprite_item& item);
-    void update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obstacles);
+
+    void update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles);
     const Hitbox& get_hitbox() const;
+    bn::sprite_ptr& get_sprite();  // Added so game_scene can call remove_camera()
+    void set_camera(bn::camera_ptr& camera) {sprite.set_camera(camera);}
 
 private:
     bn::sprite_ptr sprite;
     Hitbox hitbox;
-    bool chasing_player;
     int last_direction;
-    
-    // **Fix: Declare animation as an optional animation action**
+    bool chasing_player;
     bn::optional<bn::sprite_animate_action<4>> animation;
 };
 

@@ -6,6 +6,7 @@
 #include "bn_optional.h"
 #include "bn_vector.h"
 #include "hitbox.h"
+#include "bn_camera_actions.h"
 
 class Player {
 public:
@@ -14,6 +15,7 @@ public:
     Hitbox get_hitbox() const;
     void increase_score();
     const bn::sprite_ptr& get_sprite() const { return sprite; }
+    void set_camera(bn::camera_ptr& camera) {sprite.set_camera(camera);}
 
 private:
     bn::sprite_ptr sprite;
