@@ -1,3 +1,4 @@
+// game_scene.cpp
 #include "../include/game_scene.h"
 #include "bn_core.h"
 #include "bn_keypad.h"
@@ -14,6 +15,7 @@
 #include "../include/coin.h"
 #include "../include/cloak.h"
 #include "../include/bat.h"
+#include "../include/camera.h"
 #include "bn_sound_items.h"
 #include "bn_camera_actions.h"
 
@@ -26,24 +28,25 @@ void sprites_animation_actions_scene() {
     bg.set_mosaic_enabled(true);
     bg.set_camera(camera);
 
-    // Create player, enemies, and coin
+    // Create player
     Player lamb(0, 0, bn::sprite_items::lamb);
     lamb.set_camera(camera);
 
+    // Create enemies (remove camera association)
     Cloak cloak(40, 40, bn::sprite_items::cloak);
-<<<<<<< HEAD
-    cloak.set_camera(camera);
+    cloak.get_sprite().remove_camera();
 
-=======
     Bat bat(-50, 50, bn::sprite_items::bat);
->>>>>>> main
+    bat.get_sprite().remove_camera();
+
+    // Create coin
     Coin coin(0, 0); // Temporary position, will respawn
     coin.set_camera(camera);
 
     // Define map obstacles and borders
     bn::vector<Hitbox, 10> obstacles;
-    obstacles.push_back(Hitbox{-60, -70, 30, 30}); // Pikes on the top left
-    obstacles.push_back(Hitbox{80,  0, 40, 30});   // Pikes on the right
+    obstacles.push_back(Hitbox{-60, -70, 30, 30});   // Pikes on the top left
+    obstacles.push_back(Hitbox{80,  0, 40, 30});     // Pikes on the right
     obstacles.push_back(Hitbox{-256,  0, 10, 256});  // Left border
     obstacles.push_back(Hitbox{ 256,  0, 10, 256});  // Right border
     obstacles.push_back(Hitbox{ 0, -128, 512, 10});  // Top border
@@ -53,14 +56,19 @@ void sprites_animation_actions_scene() {
     coin.respawn(random_generator, obstacles);
 
     while (!bn::keypad::start_pressed()) {
+        // Update coin animation and player
         coin.update_animation();
         lamb.update(obstacles);
-        camera.set_x(lamb.get_sprite().x());
-        camera.set_y(lamb.get_sprite().y());
-        cloak.update(lamb.get_sprite(), obstacles);
-        bat.update(lamb.get_sprite(), obstacles);
 
-        // Player collects coins
+        // Update camera using camera system
+        camera_system::update_camera(camera, lamb.get_sprite().position());
+
+        // Update enemies using their own logic (independent of player movement)
+        bn::fixed_point player_world_pos = lamb.get_sprite().position();
+        cloak.update(player_world_pos, obstacles);
+        bat.update(player_world_pos, obstacles);
+
+        // Player collects coin
         if (lamb.get_hitbox().collides(coin.get_hitbox())) {
             bn::sound_items::coin.play();
             coin.respawn(random_generator, obstacles);

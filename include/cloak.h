@@ -11,7 +11,8 @@
 class Cloak {
 public:
     Cloak(int x, int y, const bn::sprite_item& item);
-    void update(const bn::sprite_ptr& target, const bn::vector<Hitbox, 10>& obstacles);
+    void update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles);
+
     const Hitbox& get_hitbox() const;
     void set_camera(bn::camera_ptr& camera) {sprite.set_camera(camera);}
 
