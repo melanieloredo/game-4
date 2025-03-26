@@ -1,0 +1,11 @@
+{
+    "type": "regular_bg",
+    "regular_bg": [
+        {
+            "id": "title_bg",
+            "graphics_file": "title_bg.bmp",
+            "bpp_mode": "8",
+            "compression": "none"
+        }
+    ]
+}
