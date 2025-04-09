@@ -1,6 +1,8 @@
 #ifndef GAME_SCENE_H
 #define GAME_SCENE_H
 
-void sprites_animation_actions_scene();
+namespace Room1 {
+	extern void play_game_scene();
+}
 
 #endif // GAME_SCENE_H
