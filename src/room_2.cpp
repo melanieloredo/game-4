@@ -1,4 +1,4 @@
-#include "../include/room1.h"
+#include "../include/room2.h"
 #include "bn_core.h"
 #include "bn_keypad.h"
 #include "bn_sprite_animate_actions.h"
@@ -19,7 +19,7 @@
 #include "bn_sound_items.h"
 #include "bn_camera_actions.h"
 
-namespace Room1 {
+namespace Room2 {
 	void play_game_scene() {
 		bn::random random_generator;
 		bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
@@ -34,10 +34,10 @@ namespace Room1 {
 		lamb.set_camera(camera);
 
 		// Create enemies
-		Cloak cloak(40, 40, bn::sprite_items::cloak);
+		Cloak cloak(-40, -40, bn::sprite_items::cloak);
 		cloak.set_camera(camera);
 
-		Bat bat(-50, 50, bn::sprite_items::bat);
+		Bat bat(50, -50, bn::sprite_items::bat);
 		bat.set_camera(camera);
 
 		// Create coin
