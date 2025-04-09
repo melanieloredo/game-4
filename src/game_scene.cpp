@@ -108,5 +108,6 @@ void play_game_scene() {
 void sprites_animation_actions_scene() {
     while (true) {
         play_game_scene();
+        bn::core::update();
     }
 }

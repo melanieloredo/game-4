@@ -7,10 +7,6 @@ int main() {
     titlescreen();  // Show title screen first
 
     sprites_animation_actions_scene();
-
-    while(true)
-    {
-        bn::core::update();  // fallback loop (not reached unless game ends and returns)
-    }
+    
     return 0;
 }
