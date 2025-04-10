@@ -36,8 +36,10 @@ private:
     bn::fixed fly_speed;
 
     bn::optional<bn::sprite_animate_action<4>> animation;
+    bn::fixed_point previous_position;
 
     void move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const bn::vector<Hitbox, 10>& obstacles);
+    void stop_animation();
 };
 
 #endif
