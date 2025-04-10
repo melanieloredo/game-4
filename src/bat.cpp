@@ -16,11 +16,13 @@ Bat::Bat(int x, int y, const bn::sprite_item& item)
       dash_direction_y(0),
       dash_speed(2.0),
       fly_speed(0.5),
-      animation(bn::nullopt) {}
+      animation(bn::nullopt),
+      previous_position(sprite.position()) {}
 
 void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
     if (pause_timer > 0) {
         --pause_timer;
+        stop_animation();
         return;
     }
 
@@ -28,8 +30,9 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         if (--pre_dash_timer <= 0) {
             is_preparing_dash = false;
             is_dashing = true;
-            dash_timer = 20;
+            dash_timer = 40; // Increased dash duration
         }
+        stop_animation();
         return;
     }
 
@@ -46,20 +49,28 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
             pause_timer = 300;
         }
 
-        if (animation.has_value()) {
-            animation.reset();
+        // Ensure animation plays during dash
+        if (!animation.has_value()) {
+            animation = bn::create_sprite_animate_action_forever(
+                sprite, 5, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
+            );
         }
 
-        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0);
+        previous_position = sprite.position();
+        if (animation.has_value()) {
+            animation->update();
+        }
         return;
     }
 
-    if (distance < 100 && dash_cooldown <= 0) {
+    // Dash triggers sooner (closer distance)
+    if (distance < 50 && dash_cooldown <= 0) {
         is_preparing_dash = true;
         pre_dash_timer = 30;
         dash_direction_x = dx / distance;
         dash_direction_y = dy / distance;
         dash_cooldown = 60;
+        stop_animation();
         return;
     }
 
@@ -67,23 +78,31 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         --dash_cooldown;
     }
 
-    if (distance > 1) {
-        bn::fixed move_dx = (dx / distance) * fly_speed;
-        bn::fixed move_dy = (dy / distance) * fly_speed;
-        move_in_direction(move_dx, move_dy, 1, obstacles);
+    bn::fixed move_dx = 0;
+    bn::fixed move_dy = 0;
 
+    if (distance > 1) {
+        move_dx = (dx / distance) * fly_speed;
+        move_dy = (dy / distance) * fly_speed;
+        move_in_direction(move_dx, move_dy, 1, obstacles);
+    }
+
+    // Check for movement
+    bn::fixed movement_dx = sprite.x() - previous_position.x();
+    bn::fixed movement_dy = sprite.y() - previous_position.y();
+    bn::fixed movement_distance = bn::sqrt(movement_dx * movement_dx + movement_dy * movement_dy);
+
+    if (movement_distance > 0.1) {
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
                 sprite, 10, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
             );
         }
     } else {
-        if (!animation.has_value()) {
-            animation = bn::create_sprite_animate_action_forever(
-                sprite, 10, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
-            );
-        }
+        stop_animation();
     }
+
+    previous_position = sprite.position();
 
     if (animation.has_value()) {
         animation->update();
@@ -103,6 +122,13 @@ void Bat::move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const b
     }
 }
 
+void Bat::stop_animation() {
+    if (animation.has_value()) {
+        animation.reset();
+        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0); // Idle frame
+    }
+}
+
 const Hitbox& Bat::get_hitbox() const {
     return hitbox;
 }
@@ -110,3 +136,4 @@ const Hitbox& Bat::get_hitbox() const {
 bn::sprite_ptr& Bat::get_sprite() {
     return sprite;
 }
+      
