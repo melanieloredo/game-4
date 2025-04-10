@@ -72,7 +72,7 @@ void titlescreen()
     bool play_selected = false;
 
     // main loop
-    while (!bn::keypad::a_pressed())
+    while (!bn::keypad::start_pressed())
     {
         // check for d-pad input to select/deselect play button
         if (bn::keypad::down_pressed())
