@@ -22,7 +22,18 @@ Bat::Bat(int x, int y, const bn::sprite_item& item)
 void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
     if (pause_timer > 0) {
         --pause_timer;
-        stop_animation();
+
+        // Keep flapping while pausing after dash
+        if (!animation.has_value()) {
+            animation = bn::create_sprite_animate_action_forever(
+                sprite, 10, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
+            );
+        }
+
+        if (animation.has_value()) {
+            animation->update();
+        }
+
         return;
     }
 
@@ -30,7 +41,7 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         if (--pre_dash_timer <= 0) {
             is_preparing_dash = false;
             is_dashing = true;
-            dash_timer = 40; // Increased dash duration
+            dash_timer = 40; // Longer dash
         }
         stop_animation();
         return;
@@ -49,7 +60,7 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
             pause_timer = 300;
         }
 
-        // Ensure animation plays during dash
+        // Keep animation running during dash
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
                 sprite, 5, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
@@ -57,9 +68,11 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         }
 
         previous_position = sprite.position();
+
         if (animation.has_value()) {
             animation->update();
         }
+
         return;
     }
 
@@ -136,4 +149,3 @@ const Hitbox& Bat::get_hitbox() const {
 bn::sprite_ptr& Bat::get_sprite() {
     return sprite;
 }
-      
