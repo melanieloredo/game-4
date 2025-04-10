@@ -1,12 +1,17 @@
-#include "../include/game_scene.h"
-#include "../include/titlescreen.h"  // include your title screen
+#include "../include/room1.h"
+#include "../include/room2.h"
+#include "../include/titlescreen.h"
 #include "bn_core.h"
+#include "bn_keypad.h"
 
 int main() {
     bn::core::init();
     titlescreen();  // Show title screen first
 
-    sprites_animation_actions_scene();
-    
+    while (true) {
+        Room2::play_game_scene();
+        bn::core::update();
+    }
+
     return 0;
 }
