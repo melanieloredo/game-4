@@ -33,7 +33,7 @@ void Player::update(const bn::vector<Hitbox, 10>& obstacles) {
         return;
     }
 
-    if (bn::keypad::a_pressed()) {
+    if (bn::keypad::a_pressed() && !is_attacking) {
         attack();
         return;
     }
@@ -105,17 +105,35 @@ void Player::update(const bn::vector<Hitbox, 10>& obstacles) {
 }
 
 void Player::attack() {
+    if (is_attacking) {
+        return; // Prevent attack if already attacking
+    }
+
     is_attacking = true;
     attack_timer = 20;
     update_attack_hitbox();
 
-    int frame = 0;
-    if (last_direction == 2)      frame = 1;  // Up
-    else if (last_direction == 3) frame = 0;  // Down
-    else if (last_direction == 0) frame = 2;  // Left
-    else if (last_direction == 1) frame = 3;  // Right
+    // Determine the correct attack animation frame based on the last direction
+    int start_frame = 0;
+    if (last_direction == 0 || last_direction == 2) {  // Left
+        start_frame = 0;         // Attack left animation frame starts at 0
+    } else if (last_direction == 1 || last_direction == 3) {  // Right
+        start_frame = 5;         // Attack right animation frame starts at 5
+    }
+    // Other directions (up, down) are not used for attacking
 
-    sprite.set_tiles(attack_sprite_item.tiles_item(), frame);
+     // Reset any previous animation
+     if (animation.has_value()) {
+        animation.reset();
+    }
+
+    // Create an animation action for 4 frames (for attack)
+    animation = bn::create_sprite_animate_action_once(
+        sprite, 4, attack_sprite_item.tiles_item(),
+        start_frame, start_frame + 1, start_frame + 2, start_frame + 3
+    );
+    
+
 }
 
 void Player::update_attack_hitbox() {
