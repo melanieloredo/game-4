@@ -30,7 +30,7 @@
 #---------------------------------------------------------------------------------------------------------------------
 TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
-LIBBUTANO   	:=  C:\Users\[USER]\Documents\butano-18.7.1\butano
+LIBBUTANO   	:=  C:\Users\lored\Documents\butano-18.7.1\butano
 PYTHON      	:=  python
 SOURCES     	:=  src
 INCLUDES    	:=  -Iinclude -Isrc
