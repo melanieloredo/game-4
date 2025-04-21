@@ -3,6 +3,7 @@
 
 #include "bn_vector.h"
 #include "bn_sprite_ptr.h"
+#include "bn_camera_ptr.h" 
 
 class HeartUI
 {
@@ -12,7 +13,7 @@ public:
     void set_health(float current_health);  // can be half values like 2.5
     void set_position(int x, int y);
 
-private:
+   private:
     int _max_hearts;
     float _current_health;
 

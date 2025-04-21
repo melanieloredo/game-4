@@ -13,6 +13,7 @@ HeartUI::HeartUI(int max_hearts) : //constructor
         auto sprite = bn::sprite_items::heart.create_sprite(i * 10, 0);
         sprite.set_tiles(bn::sprite_items::heart.tiles_item().create_tiles(0)); // full by default, frame 0
         _heart_sprites.push_back(bn::move(sprite));// store in vector, move transfers ownership
+
     }
 }
 
