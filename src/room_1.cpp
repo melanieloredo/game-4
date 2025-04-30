@@ -11,7 +11,6 @@
 #include "bn_sprite_items_lambattk.h"
 #include "bn_sprite_items_lambdash.h"
 #include "bn_sprite_items_cloak.h"
-#include "bn_sprite_items_coin_animated.h"
 #include "bn_sprite_items_bat.h"
 
 #include "bn_vector.h"
@@ -20,7 +19,7 @@
 
 #include "../include/hitbox.h"
 #include "../include/player.h"
-#include "../include/coin.h"
+#include "../include/heart.h"
 #include "../include/cloak.h"
 #include "../include/bat.h"
 #include "../include/camera.h"
@@ -47,8 +46,8 @@ namespace Room1 {
         Bat bat(-50, 50, bn::sprite_items::bat);
         bat.set_camera(camera);
 
-        Coin coin(0, 0);
-        coin.set_camera(camera);
+        Heart heart(0, 0); 
+        heart.set_camera(camera);
 
         bn::vector<Hitbox, 10> obstacles;
         obstacles.push_back(Hitbox{-60, -70, 30, 30});
@@ -58,7 +57,7 @@ namespace Room1 {
         obstacles.push_back(Hitbox{ 0, -128, 512, 10});
         obstacles.push_back(Hitbox{ 0,  128, 512, 10});
 
-        coin.respawn(random_generator, obstacles);
+        heart.respawn(random_generator, obstacles);
 
         bool cloak_alive = true;
         bool bat_alive = true;
@@ -66,7 +65,7 @@ namespace Room1 {
         int damage_cooldown_frames = 0;
 
         while (!bn::keypad::start_pressed()) {
-            coin.update_animation();
+           
             lamb.update(obstacles);
             heartUI.set_health(player_health);
 
@@ -111,10 +110,13 @@ namespace Room1 {
                 }
             }
 
-            if (lamb.get_hitbox().collides(coin.get_hitbox())) {
-                bn::sound_items::coin.play();
-                coin.respawn(random_generator, obstacles);
-                lamb.increase_score();
+            if (lamb.get_hitbox().collides(heart.get_hitbox())) {
+                //bn::sound_items::heart.play(); //heart pick up sound
+                heart.respawn(random_generator, obstacles);
+                player_health += 1.0f;  // heal 1 heart when picked up
+                if (player_health > 3.0f) {
+                    player_health = 3.0f;  // cap health at max 3
+                }
             }
 
             if (bn::keypad::select_pressed()) {
