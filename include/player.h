@@ -11,38 +11,46 @@
 
 class Player {
 public:
-    Player(int x, int y, const bn::sprite_item& idle_item, const bn::sprite_item& attack_item);
+    Player(int x, int y,
+           const bn::sprite_item& idle_item,
+           const bn::sprite_item& attack_item,
+           const bn::sprite_item& dash_item);
 
     void update(const bn::vector<Hitbox, 10>& obstacles);
-    void attack();
-    void increase_score();
+    void set_camera(bn::camera_ptr& camera);
 
     Hitbox get_hitbox() const;
     Hitbox get_attack_hitbox() const;
-
-    // 🔓 Public accessors
     const bn::sprite_ptr& get_sprite() const;
+
+    void increase_score();
+
     bool is_attacking_now() const;
-    void set_camera(bn::camera_ptr& camera);
+    bool is_dashing_now() const;
 
 private:
-    // 🔒 Core state
     bn::sprite_ptr sprite;
     const bn::sprite_item& idle_sprite_item;
     const bn::sprite_item& attack_sprite_item;
+    const bn::sprite_item& dash_sprite_item;
 
     Hitbox hitbox;
     Hitbox attack_hitbox;
 
-    int last_direction; // 0 = left, 1 = right, 2 = up, 3 = down
+    int last_direction; // 0 left, 1 right, 2 up, 3 down
     int score;
 
     bool is_attacking;
     int attack_timer;
 
+    bool is_dashing;
+    int dash_timer;
+
     bn::optional<bn::sprite_animate_action<4>> animation;
 
+    void attack();
+    void dash();
     void update_attack_hitbox();
 };
 
-#endif // PLAYER_H
+#endif
