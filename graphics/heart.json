@@ -1,4 +1,9 @@
 {
     "type": "sprite",
-    "height": 32
+    "name": "heart",
+    "graphics": "graphics/heart.bmp",          
+    "compression": "none",       
+    "frames": 3,                             
+    "height": 32               
 }
+  

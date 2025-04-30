@@ -9,7 +9,7 @@ int main() {
     titlescreen();  // Show title screen first
 
     while (true) {
-        Room2::play_game_scene();
+        Room1::play_game_scene();
         bn::core::update();
     }
 
