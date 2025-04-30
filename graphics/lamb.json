@@ -1,4 +1,9 @@
 {
     "type": "sprite",
-	"height": 64
-}
+    "bpp_mode": "bpp_4",
+    "tiles_compression": "none",
+    "palette_compression": "none",
+    "palette_item": "lamb_shared_palette",
+	  "height": 64
+  }
+  
