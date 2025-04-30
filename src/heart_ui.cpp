@@ -3,16 +3,27 @@
 #include "bn_sprite_tiles_ptr.h" //tile header
 #include "bn_sprite_ptr.h" //sprites
 
+#include "bn_sprite_builder.h" //sprite builder
 #include "bn_sprite_items_heart.h" //heart sprite
 
 HeartUI::HeartUI(int max_hearts) : //constructor
     _max_hearts(max_hearts), _current_health(max_hearts) //max hearts = number of hearts player can have
 {
+    constexpr int heart_spacing = 10;
+    constexpr int display_height = 160; // GBA screen height
+    int total_width = (_max_hearts - 1) * heart_spacing;
+
     for(int i = 0; i < _max_hearts; ++i) //loop for each heart to display
     {
-        auto sprite = bn::sprite_items::heart.create_sprite(i * 10, 0);
-        sprite.set_tiles(bn::sprite_items::heart.tiles_item().create_tiles(0)); // full by default, frame 0
-        _heart_sprites.push_back(bn::move(sprite));// store in vector, move transfers ownership
+        bn::sprite_builder builder(bn::sprite_items::heart); // <-- Create a builder
+
+        int x = -total_width / 2 + i * heart_spacing;
+        int y = -(display_height / 2) + 10; // 10px from top
+
+        builder.set_position(x, y);
+        builder.set_bg_priority(0);
+
+        _heart_sprites.push_back(builder.release_build()); // <-- Build and store the sprite
 
     }
 }
@@ -42,8 +53,12 @@ void HeartUI::set_health(float current_health) //update visuals
 
 void HeartUI::set_position(int x, int y) //for the heart bar
 {
+     constexpr int heart_spacing = 10;
+    int total_width = (_max_hearts - 1) * heart_spacing;
+
     for(int i = 0; i < _max_hearts; ++i)
     {
-        _heart_sprites[i].set_position(x + i * 10, y);
+        int heart_x = x - total_width / 2 + i * heart_spacing;
+        _heart_sprites[i].set_position(heart_x, y);
     }
 }

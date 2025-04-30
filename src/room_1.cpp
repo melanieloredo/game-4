@@ -23,6 +23,8 @@
 #include "bn_sound_items.h"
 #include "bn_camera_actions.h"
 
+#include "../include/heart_ui.h" // Heart UI
+
 
 
 namespace Room1 {
@@ -40,9 +42,9 @@ namespace Room1 {
 		lamb.set_camera(camera);
 		
 
-		//Create Heart UI
-		HeartUI heartUI(3);
-        heartUI.set_position(0,0);
+		// Create Heart UI
+        HeartUI heartUI(3); // Display 3 hearts
+        heartUI.set_position(0, 0); // Initially position at (0, 0), adjust if needed
         
 
 		// Create enemies

@@ -4,6 +4,7 @@
 #include "bn_vector.h"
 #include "bn_sprite_ptr.h"
 #include "bn_camera_ptr.h" 
+#include "bn_sprite_builder.h" //we use builder now
 
 class HeartUI
 {
