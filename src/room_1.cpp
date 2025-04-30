@@ -1,9 +1,13 @@
 #include "../include/room1.h"
+#include "../include/heart_ui.h" //heart ui
+
 #include "bn_core.h"
 #include "bn_keypad.h"
+
 #include "bn_sprite_animate_actions.h"
 #include "bn_regular_bg_items_room1_bg.h"
 #include "bn_regular_bg_ptr.h"
+
 #include "bn_sprite_items_lamb.h"
 #include "bn_sprite_items_lambattk.h"
 #include "bn_sprite_items_cloak.h"
@@ -19,6 +23,10 @@
 #include "bn_sound_items.h"
 #include "bn_camera_actions.h"
 
+#include "../include/heart_ui.h" // Heart UI
+
+
+
 namespace Room1 {
 	void play_game_scene() {
 		bn::random random_generator;
@@ -32,6 +40,12 @@ namespace Room1 {
 		// Create player
 		Player lamb(0, 0, bn::sprite_items::lamb, bn::sprite_items::lambattk);
 		lamb.set_camera(camera);
+		
+
+		// Create Heart UI
+        HeartUI heartUI(3); // Display 3 hearts
+        heartUI.set_position(-109, -70); // Initially position at (0, 0), adjust if needed
+        
 
 		// Create enemies
 		Cloak cloak(40, 40, bn::sprite_items::cloak);
@@ -59,10 +73,24 @@ namespace Room1 {
 		bool cloak_alive = true;
 		bool bat_alive = true;
 
+
+		float player_health = 3.0f; //start health
+		int damage_cooldown_frames = 0; // cooldown to prevent instant health loss
+
 		while (!bn::keypad::start_pressed()) {
 			// Update coin animation and player
 			coin.update_animation();
 			lamb.update(obstacles);
+
+			//update health
+			heartUI.set_health(player_health);
+
+			// 🆕 Check if player is dead
+			if(player_health <= 0.0f)
+			{
+			bn::core::update();
+			bn::core::reset();
+			}
 
 			// Camera follow
 			camera_system::update_camera(camera, lamb.get_sprite().position());
@@ -88,6 +116,27 @@ namespace Room1 {
 					bat_alive = false;
 				}
 			}
+
+			
+			// --- Damage Logic---
+			if (damage_cooldown_frames > 0) {
+				--damage_cooldown_frames;
+			}
+
+			if (damage_cooldown_frames <= 0) {
+				// If cloak hits lamb
+				if (cloak_alive && lamb.get_hitbox().collides(cloak.get_hitbox())) {
+					player_health -= 0.5f;
+					damage_cooldown_frames = 30; // Half second of invincibility
+				}
+
+				// If bat hits lamb
+				if (bat_alive && lamb.get_hitbox().collides(bat.get_hitbox())) {
+					player_health -= 0.5f;
+					damage_cooldown_frames = 30;
+				}
+			}
+			// ----------------------------
 
 			// Coin pickup
 			if (lamb.get_hitbox().collides(coin.get_hitbox())) {
