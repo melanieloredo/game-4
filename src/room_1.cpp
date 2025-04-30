@@ -75,6 +75,7 @@ namespace Room1 {
 
 
 		float player_health = 3.0f; //start health
+		int damage_cooldown_frames = 0; // cooldown to prevent instant health loss
 
 		while (!bn::keypad::start_pressed()) {
 			// Update coin animation and player
@@ -83,6 +84,13 @@ namespace Room1 {
 
 			//update health
 			heartUI.set_health(player_health);
+
+			// 🆕 Check if player is dead
+			if(player_health <= 0.0f)
+			{
+			bn::core::update();
+			bn::core::reset();
+			}
 
 			// Camera follow
 			camera_system::update_camera(camera, lamb.get_sprite().position());
@@ -108,6 +116,27 @@ namespace Room1 {
 					bat_alive = false;
 				}
 			}
+
+			
+			// --- Damage Logic---
+			if (damage_cooldown_frames > 0) {
+				--damage_cooldown_frames;
+			}
+
+			if (damage_cooldown_frames <= 0) {
+				// If cloak hits lamb
+				if (cloak_alive && lamb.get_hitbox().collides(cloak.get_hitbox())) {
+					player_health -= 0.5f;
+					damage_cooldown_frames = 30; // Half second of invincibility
+				}
+
+				// If bat hits lamb
+				if (bat_alive && lamb.get_hitbox().collides(bat.get_hitbox())) {
+					player_health -= 0.5f;
+					damage_cooldown_frames = 30;
+				}
+			}
+			// ----------------------------
 
 			// Coin pickup
 			if (lamb.get_hitbox().collides(coin.get_hitbox())) {
