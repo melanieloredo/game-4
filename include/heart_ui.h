@@ -17,6 +17,7 @@ public:
    private:
     int _max_hearts;
     float _current_health;
+    int heart_spacing;
 
     bn::vector<bn::sprite_ptr, 10> _heart_sprites;
 };

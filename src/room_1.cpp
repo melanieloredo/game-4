@@ -44,7 +44,7 @@ namespace Room1 {
 
 		// Create Heart UI
         HeartUI heartUI(3); // Display 3 hearts
-        heartUI.set_position(0, 0); // Initially position at (0, 0), adjust if needed
+        heartUI.set_position(-109, -70); // Initially position at (0, 0), adjust if needed
         
 
 		// Create enemies
