@@ -52,10 +52,10 @@ namespace Room1 {
         bn::vector<Hitbox, 10> obstacles;
         obstacles.push_back(Hitbox{-60, -70, 30, 30});
         obstacles.push_back(Hitbox{80,  0, 40, 30});
-        obstacles.push_back(Hitbox{-256,  0, 10, 256});
-        obstacles.push_back(Hitbox{ 256,  0, 10, 256});
-        obstacles.push_back(Hitbox{ 0, -128, 512, 10});
-        obstacles.push_back(Hitbox{ 0,  128, 512, 10});
+        obstacles.push_back(Hitbox{-160,  -128, 10, 256});
+        obstacles.push_back(Hitbox{ 164,  -128, 10, 256});
+        obstacles.push_back(Hitbox{ -164, -128, 512, 10});
+        obstacles.push_back(Hitbox{ -164,  120, 512, 10});
 
         heart.respawn(random_generator, obstacles);
 
