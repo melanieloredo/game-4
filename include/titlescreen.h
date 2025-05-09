@@ -1,7 +1,6 @@
-// titlescreen.h
 #ifndef TITLESCREEN_H
 #define TITLESCREEN_H
 
-void titlescreen();
+unsigned titlescreen();  // ⬅️ change return type to unsigned (returns seed)
 
 #endif
