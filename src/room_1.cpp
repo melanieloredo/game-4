@@ -46,15 +46,16 @@ namespace Room1 {
         Heart heart(0, 0); 
         heart.set_camera(camera);
 
-bn::vector<Hitbox, 10> obstacles;
-obstacles.push_back(Hitbox{-60, -70, 30, 30});
-obstacles.push_back(Hitbox{80,  0, 40, 30});
-obstacles.push_back(Hitbox{-160,  -128, 10, 256});
-obstacles.push_back(Hitbox{ 164,  -128, 10, 256});
-obstacles.push_back(Hitbox{ -164, -128, 512, 10});
-obstacles.push_back(Hitbox{ -164,  120, 512, 10});
-obstacles.push_back(Hitbox{ 148, -90, 10, 35});
+        bn::vector<Hitbox, 10> obstacles;
+        obstacles.push_back(Hitbox{-60, -70, 30, 30});
+        obstacles.push_back(Hitbox{80,  0, 40, 30});
+        obstacles.push_back(Hitbox{-160,  -128, 10, 256});
+        obstacles.push_back(Hitbox{ 164,  -128, 10, 256});
+        obstacles.push_back(Hitbox{ -164, -128, 512, 10});
+        obstacles.push_back(Hitbox{ -164,  120, 512, 10});
+        // REMOVE: obstacles.push_back(Hitbox{ 148, -90, 10, 35 });
 
+        Hitbox exit_trigger(148, -90, 10, 35);
 
         int bat_count = rng.get_int(2, 6);
         int cloak_count = rng.get_int(1, 4);
@@ -122,7 +123,7 @@ obstacles.push_back(Hitbox{ 148, -90, 10, 35});
 
             if (player_health <= 0.0f) {
                 bn::core::update();
-                bn::core::reset(); // reset game on death
+                bn::core::reset();
             }
 
             camera_system::update_camera(camera, lamb.get_sprite().position());
@@ -165,9 +166,27 @@ obstacles.push_back(Hitbox{ 148, -90, 10, 35});
                 }
             }
 
+            bool all_defeated = true;
+            for (int i = 0, limit = bats.size(); i < limit; ++i) {
+                if (bats[i].get_sprite().visible()) {
+                    all_defeated = false;
+                    break;
+                }
+            }
+            for (int i = 0, limit = cloaks.size(); i < limit; ++i) {
+                if (cloaks[i].get_sprite().visible()) {
+                    all_defeated = false;
+                    break;
+                }
+            }
+
+            if (all_defeated && lamb.get_hitbox().collides(exit_trigger)) {
+                return;
+            }
+
             if (bn::keypad::select_pressed()) {
-    return; // ✅ Exit the game scene back to main(), back to title
-}
+                return;
+            }
 
             if (damage_cooldown_frames > 0) {
                 --damage_cooldown_frames;

@@ -1,8 +1,8 @@
-#ifndef GAME_SCENE_H2
-#define GAME_SCENE_H2
+#ifndef ROOM2_H
+#define ROOM2_H
 
 namespace Room2 {
-	extern void play_game_scene();
+    void play_game_scene(unsigned seed);
 }
 
-#endif // GAME_SCENE_H
+#endif
