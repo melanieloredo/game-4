@@ -53,7 +53,6 @@ namespace Room1 {
         obstacles.push_back(Hitbox{ 164,  -128, 10, 256});
         obstacles.push_back(Hitbox{ -164, -128, 512, 10});
         obstacles.push_back(Hitbox{ -164,  120, 512, 10});
-        // REMOVE: obstacles.push_back(Hitbox{ 148, -90, 10, 35 });
 
         Hitbox exit_trigger(148, -90, 10, 35);
 
