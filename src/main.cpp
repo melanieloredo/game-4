@@ -19,18 +19,23 @@ int main() {
         }
 
         bool keepGoing = true;
+        int gameCode;
         while (keepGoing) {
+            // select room based on random int
             switch (roomNum) {
                 case 0: 
-                    Room1::play_game_scene(seed);
+                    gameCode = Room1::play_game_scene(seed);
                     break;
                 case 1:
-                    Room2::play_game_scene(seed + 1);
+                    gameCode = Room2::play_game_scene(seed + 1);
                     break;
                 default:
-                    Room1::play_game_scene(seed);
+                    gameCode = Room1::play_game_scene(seed);
                     break;
             }
+            // user action translated to game action
+            if (gameCode == 0) break; // title screen / quit game
+            // else if (gameCode == 2) go to game over screen
             roomNum = random.get_int(2);
             bn::core::update();
         }

@@ -26,7 +26,7 @@
 
 namespace Room2 {
 
-void play_game_scene(unsigned seed) {
+int play_game_scene(unsigned seed) {
     bn::seed_random rng(seed);
     bn::random rng_instance;
 
@@ -106,7 +106,7 @@ void play_game_scene(unsigned seed) {
     float player_health = 3.0f;
     int damage_cooldown_frames = 0;
 
-    while (!bn::keypad::start_pressed()) {
+    while (true) {
         lamb.update(obstacles);
         heartUI.set_health(player_health);
 
@@ -161,11 +161,11 @@ void play_game_scene(unsigned seed) {
         }
 
         if (all_defeated && lamb.get_hitbox().collides(exit_trigger)) {
-            return; // proceed to Room3 or end scene
+            return 1; // proceed to Room3 or end scene
         }
 
         if (bn::keypad::select_pressed()) {
-            return;
+            return 0;
         }
 
         if (damage_cooldown_frames > 0) {

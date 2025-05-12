@@ -28,7 +28,7 @@
 
 namespace Room1 {
 
-    void play_game_scene(unsigned seed) {
+    int play_game_scene(unsigned seed) {
         bn::seed_random rng(seed); 
         bn::random rng_instance;
 
@@ -116,7 +116,7 @@ namespace Room1 {
         float player_health = 3.0f;
         int damage_cooldown_frames = 0;
 
-        while (!bn::keypad::start_pressed()) {
+        while (true) {
             lamb.update(obstacles);
             heartUI.set_health(player_health);
 
@@ -180,11 +180,11 @@ namespace Room1 {
             }
 
             if (all_defeated && lamb.get_hitbox().collides(exit_trigger)) {
-                return;
+                return 1;
             }
 
             if (bn::keypad::select_pressed()) {
-                return;
+                return 0;
             }
 
             if (damage_cooldown_frames > 0) {
