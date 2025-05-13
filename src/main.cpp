@@ -10,7 +10,7 @@ int main() {
     bn::core::init();
 
     bn::random random;
-    int roomNum = random.get_int(3); 
+    int roomNum = random.get_int(3); // 0, 1, or 2
 
     while (true) {
         unsigned seed = titlescreen();
@@ -35,7 +35,8 @@ int main() {
                     Room1::play_game_scene(seed);
                     break;
             }
-            roomNum = random.get_int(3); // choose next room randomly
+
+            roomNum = random.get_int(3);
             bn::core::update();
         }
     }
