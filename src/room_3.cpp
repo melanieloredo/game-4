@@ -1,10 +1,9 @@
-// room_2.cpp
-#include "../include/room2.h"
+#include "../include/room3.h"
 #include "../include/heart_ui.h"
 
 #include "bn_core.h"
 #include "bn_keypad.h"
-#include "bn_regular_bg_items_room2_bg.h"
+#include "bn_regular_bg_items_room21_bg.h"
 #include "bn_regular_bg_ptr.h"
 
 #include "bn_sprite_items_lamb.h"
@@ -24,14 +23,14 @@
 #include "../include/cloak.h"
 #include "../include/camera.h"
 
-namespace Room2 {
+namespace Room3 {
 
-int play_game_scene(unsigned seed) {
+void play_game_scene(unsigned seed) {
     bn::seed_random rng(seed);
     bn::random rng_instance;
 
     bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
-    bn::regular_bg_ptr bg = bn::regular_bg_items::room2_bg.create_bg(0, 0);
+    bn::regular_bg_ptr bg = bn::regular_bg_items::room21_bg.create_bg(0, 0);
     bg.set_camera(camera);
 
     Player lamb(0, 0, bn::sprite_items::lamb, bn::sprite_items::lambattk, bn::sprite_items::lambdash);
@@ -106,7 +105,7 @@ int play_game_scene(unsigned seed) {
     float player_health = 3.0f;
     int damage_cooldown_frames = 0;
 
-    while (true) {
+    while (!bn::keypad::start_pressed()) {
         lamb.update(obstacles);
         heartUI.set_health(player_health);
 
@@ -161,11 +160,11 @@ int play_game_scene(unsigned seed) {
         }
 
         if (all_defeated && lamb.get_hitbox().collides(exit_trigger)) {
-            return 1; // proceed to Room3 or end scene
+            return; // proceed to next room
         }
 
         if (bn::keypad::select_pressed()) {
-            return 0;
+            return;
         }
 
         if (damage_cooldown_frames > 0) {
