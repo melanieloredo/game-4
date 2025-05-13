@@ -16,7 +16,8 @@ public:
 
     void update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles);
     const Hitbox& get_hitbox() const;
-    bn::sprite_ptr& get_sprite();
+    bn::sprite_ptr& get_sprite();                    // Non-const access
+    const bn::sprite_ptr& get_sprite() const;        // Const-safe access
     void set_camera(bn::camera_ptr& camera) {sprite.set_camera(camera);}
 
 private:

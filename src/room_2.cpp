@@ -1,4 +1,3 @@
-// room_2.cpp
 #include "../include/room2.h"
 #include "../include/heart_ui.h"
 
@@ -12,6 +11,8 @@
 #include "bn_sprite_items_lambdash.h"
 #include "bn_sprite_items_bat.h"
 #include "bn_sprite_items_cloak.h"
+#include "bn_sprite_items_fire_worm.h"
+#include "bn_sprite_items_fire_ball.h"
 
 #include "bn_camera_actions.h"
 #include "bn_vector.h"
@@ -22,6 +23,7 @@
 #include "../include/hitbox.h"
 #include "../include/bat.h"
 #include "../include/cloak.h"
+#include "../include/fire_worm.h"
 #include "../include/camera.h"
 
 namespace Room2 {
@@ -48,60 +50,38 @@ int play_game_scene(unsigned seed) {
 
     Hitbox exit_trigger(148, -90, 10, 35);
 
-    int bat_count = rng.get_int(3, 7);
-    int cloak_count = rng.get_int(2, 5);
-
     bn::vector<Bat, 10> bats;
     bn::vector<Cloak, 10> cloaks;
+    bn::vector<FireWorm, 10> fire_worms;
     bn::vector<Hitbox, 30> spawn_zones = obstacles;
 
-    for (int i = 0; i < bat_count; ++i) {
-        for (int attempts = 0; attempts < 100; ++attempts) {
-            bn::fixed x = rng.get_fixed(-140, 140);
-            bn::fixed y = rng.get_fixed(-100, 100);
-            Hitbox test_hitbox(x, y, 16, 16);
-            bool collides = false;
-
-            for (const Hitbox& h : spawn_zones) {
-                if (test_hitbox.collides(h)) {
-                    collides = true;
+    auto try_spawn = [&](auto& list, auto sprite_item, int count) {
+        for (int i = 0; i < count; ++i) {
+            for (int attempts = 0; attempts < 100; ++attempts) {
+                bn::fixed x = rng.get_fixed(-140, 140);
+                bn::fixed y = rng.get_fixed(-100, 100);
+                Hitbox test_hitbox(x, y, 16, 16);
+                bool collides = false;
+                for (const Hitbox& h : spawn_zones) {
+                    if (test_hitbox.collides(h)) {
+                        collides = true;
+                        break;
+                    }
+                }
+                if (!collides) {
+                    auto entity = typename std::remove_reference<decltype(list)>::type::value_type(int(x), int(y), sprite_item);
+                    entity.get_sprite().set_camera(camera);
+                    list.push_back(entity);
+                    spawn_zones.push_back(test_hitbox);
                     break;
                 }
             }
-
-            if (!collides) {
-                Bat bat(int(x), int(y), bn::sprite_items::bat);
-                bat.set_camera(camera);
-                bats.push_back(bat);
-                spawn_zones.push_back(test_hitbox);
-                break;
-            }
         }
-    }
+    };
 
-    for (int i = 0; i < cloak_count; ++i) {
-        for (int attempts = 0; attempts < 100; ++attempts) {
-            bn::fixed x = rng.get_fixed(-140, 140);
-            bn::fixed y = rng.get_fixed(-100, 100);
-            Hitbox test_hitbox(x, y, 16, 16);
-            bool collides = false;
-
-            for (const Hitbox& h : spawn_zones) {
-                if (test_hitbox.collides(h)) {
-                    collides = true;
-                    break;
-                }
-            }
-
-            if (!collides) {
-                Cloak cloak(int(x), int(y), bn::sprite_items::cloak);
-                cloak.set_camera(camera);
-                cloaks.push_back(cloak);
-                spawn_zones.push_back(test_hitbox);
-                break;
-            }
-        }
-    }
+    try_spawn(bats, bn::sprite_items::bat, rng.get_int(3, 7));
+    try_spawn(cloaks, bn::sprite_items::cloak, rng.get_int(2, 5));
+    try_spawn(fire_worms, bn::sprite_items::fire_worm, rng.get_int(1, 3));
 
     float player_health = 3.0f;
     int damage_cooldown_frames = 0;
@@ -124,8 +104,7 @@ int play_game_scene(unsigned seed) {
                 if (lamb.is_attacking_now() && atk_hitbox.collides(cloak.get_hitbox())) {
                     cloak.get_sprite().set_visible(false);
                 }
-                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() &&
-                    lamb.get_hitbox().collides(cloak.get_hitbox())) {
+                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(cloak.get_hitbox())) {
                     player_health -= 0.5f;
                     damage_cooldown_frames = 30;
                 }
@@ -138,30 +117,35 @@ int play_game_scene(unsigned seed) {
                 if (lamb.is_attacking_now() && atk_hitbox.collides(bat.get_hitbox())) {
                     bat.get_sprite().set_visible(false);
                 }
-                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() &&
-                    lamb.get_hitbox().collides(bat.get_hitbox())) {
+                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(bat.get_hitbox())) {
                     player_health -= 0.5f;
                     damage_cooldown_frames = 30;
                 }
             }
         }
 
-        bool all_defeated = true;
-        for (int i = 0, limit = bats.size(); i < limit; ++i) {
-            if (bats[i].get_sprite().visible()) {
-                all_defeated = false;
-                break;
-            }
-        }
-        for (int i = 0, limit = cloaks.size(); i < limit; ++i) {
-            if (cloaks[i].get_sprite().visible()) {
-                all_defeated = false;
-                break;
+        for (FireWorm& worm : fire_worms) {
+            worm.update(lamb.get_sprite().position(), obstacles);
+            if (worm.get_sprite().visible()) {
+                for (const Fireball& fireball : worm.get_fireballs()) {
+                    if (fireball.is_active() && damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && fireball.get_hitbox().collides(lamb.get_hitbox())) {
+                        player_health -= 0.5f;
+                        damage_cooldown_frames = 30;
+                    }
+                }
+                if (lamb.is_attacking_now() && atk_hitbox.collides(worm.get_hitbox())) {
+                    worm.get_sprite().set_visible(false);
+                }
             }
         }
 
+        bool all_defeated = true;
+        for (const Bat& bat : bats) if (bat.get_sprite().visible()) all_defeated = false;
+        for (const Cloak& cloak : cloaks) if (cloak.get_sprite().visible()) all_defeated = false;
+        for (const FireWorm& worm : fire_worms) if (worm.get_sprite().visible()) all_defeated = false;
+
         if (all_defeated && lamb.get_hitbox().collides(exit_trigger)) {
-            return 1; // proceed to Room3 or end scene
+            return 1;
         }
 
         if (bn::keypad::select_pressed()) {
@@ -176,4 +160,4 @@ int play_game_scene(unsigned seed) {
     }
 }
 
-}
+} // namespace Room2
