@@ -52,7 +52,7 @@ int play_game_scene(unsigned rng_seed) {
     obstacles.push_back(Hitbox{-164, -128, 512, 10});
     obstacles.push_back(Hitbox{-164, 120, 512, 10});
 
-    Hitbox exit_trigger(148, -90, 10, 35);
+    Hitbox exit_trigger(148, -50, 10, 35);
 
     bn::vector<Bat, 10> bats;
     bn::vector<Cloak, 10> cloaks;
@@ -180,4 +180,4 @@ int play_game_scene(unsigned rng_seed) {
     }
 }
 
-}  // namespace Room3
+} 
