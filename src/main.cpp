@@ -20,8 +20,8 @@ int main() {
             bn::core::update();
         }
 
-        // Reset score at the start of gameplay
-        score_manager.reset();
+        // Reset only the current score at the start of gameplay
+        score_manager.reset_current_score();
 
         bn::random random;
         int lastRoom = -1;
@@ -50,8 +50,6 @@ int main() {
                     break;
             }
 
-            score_manager.update_highscore();
-
             lastRoom = roomNum;
 
             if (bn::keypad::select_held()) {
@@ -60,6 +58,8 @@ int main() {
 
             bn::core::update();
         }
+         // finalize the run before going to title screen
+        score_manager.update_highscore();
     }
 
     return 0;

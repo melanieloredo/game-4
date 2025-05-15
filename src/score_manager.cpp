@@ -10,12 +10,21 @@ namespace {
     bn::vector<bn::sprite_ptr, 32> score_sprites;
 }
 
-void ScoreManager::reset() {
+void ScoreManager::reset_current_score() {
     _score = 0;
 }
 
 void ScoreManager::add_points(int points) {
     _score += points;
+     // Keep track of highscore in the same session
+    if (_score > _highscore) {
+        _highscore = _score;
+    }
+}
+
+void ScoreManager::reset_all() {
+    _score = 0;
+    _highscore = 0;
 }
 
 void ScoreManager::draw_score(int x, int y) {

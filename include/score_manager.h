@@ -3,10 +3,16 @@
 
 class ScoreManager {
 public:
-    void reset();
+    // Reset only current score (not highscore)
+    void reset_current_score();
+
+    // Optional: reset both scores if ever needed
+    void reset_all();
+
     void add_points(int points);
     void draw_score(int x, int y);
     int current_score() const;
+    
     //highscore
     void update_highscore();
     int get_highscore() const;
