@@ -14,7 +14,7 @@ int main() {
     ScoreManager score_manager;
 
     while (true) {
-        unsigned seed = titlescreen();
+        unsigned seed = titlescreen(score_manager);
 
         while (bn::keypad::any_held()) {
             bn::core::update();
@@ -49,6 +49,8 @@ int main() {
                 default:
                     break;
             }
+
+            score_manager.update_highscore();
 
             lastRoom = roomNum;
 

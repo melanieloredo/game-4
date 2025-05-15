@@ -14,9 +14,26 @@
 #include "bn_sprite_items_flame1.h"
 #include "bn_sprite_items_flame2.h"
 
-#define REG_VCOUNT (*(volatile unsigned short*)(0x04000006))
+#include "bn_string.h"                    
+#include "../include/common_fixed_8x8_sprite_font.h"   
+#include "bn_sprite_text_generator.h"
+#include "../include/score_manager.h"                  
 
-unsigned titlescreen()
+
+#define REG_VCOUNT (*(volatile unsigned short*)(0x04000006))
+namespace {
+    bn::sprite_text_generator text_generator(common::fixed_8x8_sprite_font);
+    bn::vector<bn::sprite_ptr, 32> highscore_sprites;
+
+    void draw_highscore(int x, int y, int highscore)
+    {
+        highscore_sprites.clear();
+        bn::string<32> highscore_text = bn::to_string<32>(highscore);
+        text_generator.generate(x, y, highscore_text, highscore_sprites);
+    }
+}
+
+unsigned titlescreen(const ScoreManager& score_manager)
 {
     int flash_counter = 0;
     bool flash_visible = true;
@@ -91,10 +108,15 @@ unsigned titlescreen()
         flame1_anim.update();
         flame2_anim.update();
 
+         // Draw highscore
+        draw_highscore(0, 42, score_manager.current_score());
+
         bn::core::update();
     }
 
     // Seed from frame wait + VCOUNT
     unsigned seed = frame_timer ^ REG_VCOUNT;
+
+    highscore_sprites.clear(); //clear for rooms
     return seed;
 }

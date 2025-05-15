@@ -27,3 +27,17 @@ void ScoreManager::draw_score(int x, int y) {
 int ScoreManager::current_score() const {
     return _score;
 }
+
+
+void ScoreManager::update_highscore()
+{
+    if(_score > _highscore)
+    {
+        _highscore = _score;
+    }
+}
+
+int ScoreManager::get_highscore() const
+{
+    return _highscore;
+}
