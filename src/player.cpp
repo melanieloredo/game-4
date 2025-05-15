@@ -3,6 +3,7 @@
 #include "bn_sprite_items_lamb.h"
 #include "bn_sprite_items_lambattk.h"
 #include "bn_sprite_items_lambdash.h"
+#include "bn_sound_items.h" // 🔊 Added for sound support
 
 namespace {
     constexpr int FRAME_DURATION = 6;
@@ -178,6 +179,8 @@ void Player::attack() {
     is_attacking = true;
     attack_timer = ATTACK_DURATION;
     update_attack_hitbox();
+
+    bn::sound_items::slash.play(); // 🔊 Play slashing sound here
 
     int start_frame = direction_to_attack_frame(last_direction);
 
