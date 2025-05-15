@@ -154,3 +154,7 @@ const Hitbox& Bat::get_hitbox() const {
 bn::sprite_ptr& Bat::get_sprite() {
     return sprite;
 }
+
+const bn::sprite_ptr& Bat::get_sprite() const {
+    return sprite;
+}

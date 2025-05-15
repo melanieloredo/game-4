@@ -16,7 +16,10 @@ public:
 
     void update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles);
     const Hitbox& get_hitbox() const;
-    bn::sprite_ptr& get_sprite();  // Added so game_scene can call remove_camera()
+
+    bn::sprite_ptr& get_sprite();                    
+    const bn::sprite_ptr& get_sprite() const;        
+
     void set_camera(bn::camera_ptr& camera) {sprite.set_camera(camera);}
 
 private:
