@@ -48,6 +48,9 @@ titlescreen.o: \
  C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_bpp_mode.h \
  C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_compression_type.h \
  C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_sprite_animate_actions_fwd.h \
+ C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_music.h \
+ C:/Users/jino1/Desktop/Hackathon/game-4/build/bn_music_items.h \
+ C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_music_item.h \
  C:/Users/jino1/Desktop/Hackathon/game-4/build/bn_regular_bg_items_title_bg.h \
  C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_regular_bg_item.h \
  C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_bg_palette_item.h \
@@ -112,6 +115,9 @@ C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_tile.h:
 C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_bpp_mode.h:
 C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_compression_type.h:
 C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_sprite_animate_actions_fwd.h:
+C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_music.h:
+C:/Users/jino1/Desktop/Hackathon/game-4/build/bn_music_items.h:
+C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_music_item.h:
 C:/Users/jino1/Desktop/Hackathon/game-4/build/bn_regular_bg_items_title_bg.h:
 C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_regular_bg_item.h:
 C:/Users/jino1/Documents/butano-18.7.1/butano/include/bn_bg_palette_item.h:

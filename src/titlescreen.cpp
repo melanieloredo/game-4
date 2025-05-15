@@ -7,6 +7,9 @@
 #include "bn_regular_bg_ptr.h"
 #include "bn_sprite_animate_actions.h"
 
+#include "bn_music.h"
+#include "bn_music_items.h" // 🔊 Music support
+
 #include "bn_regular_bg_items_title_bg.h"
 #include "bn_regular_bg_items_logo.h"
 #include "bn_sprite_items_play_button.h"
@@ -21,6 +24,9 @@ unsigned titlescreen()
     int flash_counter = 0;
     bool flash_visible = true;
     int frame_timer = 0;
+
+    // 🔊 Play title screen music
+    bn::music_items::title_theme.play();
 
     bn::regular_bg_ptr title_bg = bn::regular_bg_items::title_bg.create_bg(0, 0);
     title_bg.set_priority(3);
@@ -51,6 +57,7 @@ unsigned titlescreen()
         flame2, 10, bn::sprite_items::flame2.tiles_item(), 0, 1, 2, 3, 4
     );
 
+    // Slide logo and mascot down
     while (logo_bg.y() < 0)
     {
         logo_bg.set_y(logo_bg.y() + 1);
@@ -94,7 +101,10 @@ unsigned titlescreen()
         bn::core::update();
     }
 
-    // Seed from frame wait + VCOUNT
+    // 🔇 Stop title screen music before scene transition
+    bn::music::stop();
+
+    // Generate seed for randomness
     unsigned seed = frame_timer ^ REG_VCOUNT;
     return seed;
 }
