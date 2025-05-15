@@ -1,6 +1,6 @@
 #include "../include/room2.h"
 #include "../include/heart_ui.h"
-#include "../include/score_manager.h"  // Include ScoreManager header
+#include "../include/score_manager.h"
 
 #include "bn_core.h"
 #include "bn_keypad.h"
@@ -19,6 +19,7 @@
 #include "bn_vector.h"
 #include "bn_random.h"
 #include "bn_seed_random.h"
+#include "bn_sound_items.h" // 🔊 Sound support
 
 #include "../include/player.h"
 #include "../include/hitbox.h"
@@ -26,7 +27,7 @@
 #include "../include/cloak.h"
 #include "../include/fire_worm.h"
 #include "../include/camera.h"
-#include "../include/heart.h"  // ⬅️ include Heart
+#include "../include/heart.h"
 
 namespace Room2 {
 
@@ -44,7 +45,7 @@ int play_game_scene(unsigned seed, ScoreManager& score_manager) {
     HeartUI heartUI(3);
     heartUI.set_position(-109, -70);
 
-    Heart heart(0, 0);  // ⬅️ added
+    Heart heart(0, 0);
     heart.set_camera(camera);
     
     bn::vector<Hitbox, 10> obstacles;
@@ -88,7 +89,7 @@ int play_game_scene(unsigned seed, ScoreManager& score_manager) {
     try_spawn(cloaks, bn::sprite_items::cloak, rng.get_int(2, 5));
     try_spawn(fire_worms, bn::sprite_items::fire_worm, rng.get_int(1, 3));
     
-    heart.respawn(rng_instance, obstacles);  // ⬅️ added
+    heart.respawn(rng_instance, obstacles);
 
     float player_health = 3.0f;
     int damage_cooldown_frames = 0;
@@ -110,7 +111,8 @@ int play_game_scene(unsigned seed, ScoreManager& score_manager) {
                 cloak.update(lamb.get_sprite().position(), obstacles);
                 if (lamb.is_attacking_now() && atk_hitbox.collides(cloak.get_hitbox())) {
                     cloak.get_sprite().set_visible(false);
-                    score_manager.add_points(50);  // Add 50 points for defeating a Cloak
+                    bn::sound_items::death.play(); // 🔊 Cloak defeated
+                    score_manager.add_points(50);
                 }
                 if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(cloak.get_hitbox())) {
                     player_health -= 0.5f;
@@ -124,7 +126,8 @@ int play_game_scene(unsigned seed, ScoreManager& score_manager) {
                 bat.update(lamb.get_sprite().position(), obstacles);
                 if (lamb.is_attacking_now() && atk_hitbox.collides(bat.get_hitbox())) {
                     bat.get_sprite().set_visible(false);
-                    score_manager.add_points(30);  // Add 30 points for defeating a Bat
+                    bn::sound_items::death.play(); // 🔊 Bat defeated
+                    score_manager.add_points(30);
                 }
                 if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(bat.get_hitbox())) {
                     player_health -= 0.5f;
@@ -144,13 +147,14 @@ int play_game_scene(unsigned seed, ScoreManager& score_manager) {
                 }
                 if (lamb.is_attacking_now() && atk_hitbox.collides(worm.get_hitbox())) {
                     worm.get_sprite().set_visible(false);
-                    score_manager.add_points(40);  // Add 40 points for defeating a FireWorm
+                    bn::sound_items::death.play(); // 🔊 Fire Worm defeated
+                    score_manager.add_points(40);
                 }
             }
         }
 
-        // ⬅️ add Heart pickup logic
         if (lamb.get_hitbox().collides(heart.get_hitbox())) {
+            bn::sound_items::healthup.play(); // ❤️ Heart pickup
             heart.respawn(rng_instance, obstacles);
             player_health += 1.0f;
             if (player_health > 3.0f) {
@@ -158,7 +162,6 @@ int play_game_scene(unsigned seed, ScoreManager& score_manager) {
             }
         }
 
-        // Draw the score on screen (top-left corner)
         score_manager.draw_score(0, -70);
 
         bool all_defeated = true;

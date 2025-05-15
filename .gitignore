@@ -11,9 +11,6 @@
 *.log
 
 # Ignore build directories
-build/
-*.elf
-*.sav
 
 # Ignore VS Code settings
 .vscode/
