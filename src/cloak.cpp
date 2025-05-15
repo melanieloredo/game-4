@@ -7,18 +7,14 @@ Cloak::Cloak(int x, int y, const bn::sprite_item& item)
       hitbox{x, y, 16, 16},
       last_direction(3),
       chasing_player(false),
-      animation(bn::nullopt){};
+      animation(bn::nullopt) {}
 
 void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitbox, 10>& obstacles) {
     bn::fixed dx = target_position.x() - sprite.x();
     bn::fixed dy = target_position.y() - sprite.y();
     bn::fixed distance = bn::sqrt(dx * dx + dy * dy);
 
-    if (distance < 80) {
-        chasing_player = true;
-    } else {
-        chasing_player = false;
-    }
+    chasing_player = distance < 80;
 
     if (!chasing_player || distance < 24) {
         if (animation.has_value()) {
@@ -69,6 +65,7 @@ void Cloak::update(const bn::fixed_point& target_position, const bn::vector<Hitb
         if (animation.has_value()) {
             animation.reset();
         }
+
         int idle_frame = (last_direction == 0) ? 8
                        : (last_direction == 1) ? 12
                        : (last_direction == 2) ? 4
@@ -82,5 +79,9 @@ const Hitbox& Cloak::get_hitbox() const {
 }
 
 bn::sprite_ptr& Cloak::get_sprite() {
+    return sprite;
+}
+
+const bn::sprite_ptr& Cloak::get_sprite() const {
     return sprite;
 }

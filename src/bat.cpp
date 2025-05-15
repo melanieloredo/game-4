@@ -23,7 +23,6 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
     if (pause_timer > 0) {
         --pause_timer;
 
-        // Keep flapping while pausing after dash
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
                 sprite, 10, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
@@ -41,7 +40,7 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         if (--pre_dash_timer <= 0) {
             is_preparing_dash = false;
             is_dashing = true;
-            dash_timer = 40; // Longer dash
+            dash_timer = 40;
         }
         stop_animation();
         return;
@@ -60,7 +59,6 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
             pause_timer = 300;
         }
 
-        // Keep animation running during dash
         if (!animation.has_value()) {
             animation = bn::create_sprite_animate_action_forever(
                 sprite, 5, bn::sprite_items::bat.tiles_item(), 0, 1, 2, 3
@@ -76,7 +74,6 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         return;
     }
 
-    // Dash triggers sooner (closer distance)
     if (distance < 50 && dash_cooldown <= 0) {
         is_preparing_dash = true;
         pre_dash_timer = 30;
@@ -91,6 +88,15 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         --dash_cooldown;
     }
 
+    // Flip sprite only when flying normally
+    if (!is_dashing && !is_preparing_dash) {
+        if (dx > 0.5) {
+            sprite.set_horizontal_flip(true);  // Face right
+        } else if (dx < -0.5) {
+            sprite.set_horizontal_flip(false); // Face left
+        }
+    }
+
     bn::fixed move_dx = 0;
     bn::fixed move_dy = 0;
 
@@ -100,7 +106,6 @@ void Bat::update(const bn::fixed_point& target_position, const bn::vector<Hitbox
         move_in_direction(move_dx, move_dy, 1, obstacles);
     }
 
-    // Check for movement
     bn::fixed movement_dx = sprite.x() - previous_position.x();
     bn::fixed movement_dy = sprite.y() - previous_position.y();
     bn::fixed movement_distance = bn::sqrt(movement_dx * movement_dx + movement_dy * movement_dy);
@@ -138,7 +143,7 @@ void Bat::move_in_direction(bn::fixed dx, bn::fixed dy, bn::fixed speed, const b
 void Bat::stop_animation() {
     if (animation.has_value()) {
         animation.reset();
-        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0); // Idle frame
+        sprite.set_tiles(bn::sprite_items::bat.tiles_item(), 0);
     }
 }
 
@@ -147,5 +152,9 @@ const Hitbox& Bat::get_hitbox() const {
 }
 
 bn::sprite_ptr& Bat::get_sprite() {
+    return sprite;
+}
+
+const bn::sprite_ptr& Bat::get_sprite() const {
     return sprite;
 }

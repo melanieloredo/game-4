@@ -1,7 +1,7 @@
-#ifndef ROOM2_H
-#define ROOM2_H
+#ifndef ROOM3_H
+#define ROOM3_H
 
-namespace Room2 {
+namespace Room3 {
     int play_game_scene(unsigned seed);
 }
 
