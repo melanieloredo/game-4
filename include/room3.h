@@ -2,7 +2,7 @@
 #define ROOM3_H
 
 namespace Room3 {
-    void play_game_scene(unsigned seed);
+    int play_game_scene(unsigned seed);
 }
 
 #endif

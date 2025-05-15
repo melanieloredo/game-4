@@ -24,11 +24,12 @@
 #include "../include/bat.h"
 #include "../include/cloak.h"
 #include "../include/fire_worm.h"
+#include "../include/heart.h"
 #include "../include/camera.h"
 
 namespace Room3 {
 
-void play_game_scene(unsigned rng_seed) {
+int play_game_scene(unsigned rng_seed) {
     bn::seed_random().set_seed(rng_seed);
     bn::random rng_instance;
 
@@ -41,6 +42,9 @@ void play_game_scene(unsigned rng_seed) {
 
     HeartUI heartUI(3);
     heartUI.set_position(-109, -70);
+
+    Heart heart(0, 0);
+    heart.set_camera(camera);
 
     bn::vector<Hitbox, 10> obstacles;
     obstacles.push_back(Hitbox{-160, -128, 10, 256});
@@ -84,10 +88,12 @@ void play_game_scene(unsigned rng_seed) {
     try_spawn(cloaks, bn::sprite_items::cloak, rng_instance.get_int(2, 5));
     try_spawn(fire_worms, bn::sprite_items::fire_worm, rng_instance.get_int(1, 3));
 
+    heart.respawn(rng_instance, obstacles);
+
     float player_health = 3.0f;
     int damage_cooldown_frames = 0;
 
-    while (!bn::keypad::start_pressed()) {
+    while (true) {
         lamb.update(obstacles);
         heartUI.set_health(player_health);
 
@@ -105,7 +111,8 @@ void play_game_scene(unsigned rng_seed) {
                 if (lamb.is_attacking_now() && atk_hitbox.collides(cloak.get_hitbox())) {
                     cloak.get_sprite().set_visible(false);
                 }
-                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(cloak.get_hitbox())) {
+                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() &&
+                    lamb.get_hitbox().collides(cloak.get_hitbox())) {
                     player_health -= 0.5f;
                     damage_cooldown_frames = 30;
                 }
@@ -118,7 +125,8 @@ void play_game_scene(unsigned rng_seed) {
                 if (lamb.is_attacking_now() && atk_hitbox.collides(bat.get_hitbox())) {
                     bat.get_sprite().set_visible(false);
                 }
-                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(bat.get_hitbox())) {
+                if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() &&
+                    lamb.get_hitbox().collides(bat.get_hitbox())) {
                     player_health -= 0.5f;
                     damage_cooldown_frames = 30;
                 }
@@ -129,15 +137,25 @@ void play_game_scene(unsigned rng_seed) {
             worm.update(lamb.get_sprite().position(), obstacles);
             if (worm.get_sprite().visible()) {
                 for (const Fireball& fireball : worm.get_fireballs()) {
-                    if (fireball.is_active() && damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && fireball.get_hitbox().collides(lamb.get_hitbox())) {
+                    if (fireball.is_active() && damage_cooldown_frames <= 0 && !lamb.is_dashing_now() &&
+                        fireball.get_hitbox().collides(lamb.get_hitbox())) {
                         player_health -= 0.5f;
                         damage_cooldown_frames = 30;
                     }
                 }
                 if (lamb.is_attacking_now() && atk_hitbox.collides(worm.get_hitbox())) {
                     worm.get_sprite().set_visible(false);
-                    worm.deactivate_all_fireballs();  // Clear projectiles on death
+                    worm.deactivate_all_fireballs();
                 }
+            }
+        }
+
+        // Heart pickup
+        if (lamb.get_hitbox().collides(heart.get_hitbox())) {
+            heart.respawn(rng_instance, obstacles);
+            player_health += 1.0f;
+            if (player_health > 3.0f) {
+                player_health = 3.0f;
             }
         }
 
@@ -147,11 +165,11 @@ void play_game_scene(unsigned rng_seed) {
         for (const FireWorm& worm : fire_worms) if (worm.get_sprite().visible()) all_defeated = false;
 
         if (all_defeated && lamb.get_hitbox().collides(exit_trigger)) {
-            return;
+            return 1;
         }
 
         if (bn::keypad::select_pressed()) {
-            return;
+            return 0;
         }
 
         if (damage_cooldown_frames > 0) {
@@ -162,4 +180,4 @@ void play_game_scene(unsigned rng_seed) {
     }
 }
 
-} // namespace Room3
+}  // namespace Room3

@@ -25,6 +25,7 @@
 #include "../include/cloak.h"
 #include "../include/fire_worm.h"
 #include "../include/camera.h"
+#include "../include/heart.h"  // ⬅️ include Heart
 
 namespace Room2 {
 
@@ -42,6 +43,9 @@ int play_game_scene(unsigned seed) {
     HeartUI heartUI(3);
     heartUI.set_position(-109, -70);
 
+    Heart heart(0, 0);  // ⬅️ added
+    heart.set_camera(camera);
+    
     bn::vector<Hitbox, 10> obstacles;
     obstacles.push_back(Hitbox{-160, -128, 10, 256});
     obstacles.push_back(Hitbox{164, -128, 10, 256});
@@ -82,6 +86,8 @@ int play_game_scene(unsigned seed) {
     try_spawn(bats, bn::sprite_items::bat, rng.get_int(3, 7));
     try_spawn(cloaks, bn::sprite_items::cloak, rng.get_int(2, 5));
     try_spawn(fire_worms, bn::sprite_items::fire_worm, rng.get_int(1, 3));
+    
+    heart.respawn(rng_instance, obstacles);  // ⬅️ added
 
     float player_health = 3.0f;
     int damage_cooldown_frames = 0;
@@ -139,6 +145,15 @@ int play_game_scene(unsigned seed) {
             }
         }
 
+        // ⬅️ add Heart pickup logic
+        if (lamb.get_hitbox().collides(heart.get_hitbox())) {
+            heart.respawn(rng_instance, obstacles);
+            player_health += 1.0f;
+            if (player_health > 3.0f) {
+                player_health = 3.0f;
+            }
+        }
+
         bool all_defeated = true;
         for (const Bat& bat : bats) if (bat.get_sprite().visible()) all_defeated = false;
         for (const Cloak& cloak : cloaks) if (cloak.get_sprite().visible()) all_defeated = false;
@@ -160,4 +175,4 @@ int play_game_scene(unsigned seed) {
     }
 }
 
-} // namespace Room2
+}
