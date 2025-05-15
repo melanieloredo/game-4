@@ -2,6 +2,7 @@
 #include "../include/room2.h"
 #include "../include/room3.h"
 #include "../include/titlescreen.h"
+#include "../include/score_manager.h"  // include ScoreManager
 
 #include "bn_core.h"
 #include "bn_keypad.h"
@@ -10,12 +11,17 @@
 int main() {
     bn::core::init();
 
+    ScoreManager score_manager;
+
     while (true) {
         unsigned seed = titlescreen();
 
         while (bn::keypad::any_held()) {
             bn::core::update();
         }
+
+        // Reset score at the start of gameplay
+        score_manager.reset();
 
         bn::random random;
         int lastRoom = -1;
@@ -32,13 +38,13 @@ int main() {
 
             switch (roomNum) {
                 case 0:
-                    Room1::play_game_scene(currentSeed);
+                    Room1::play_game_scene(currentSeed, score_manager);
                     break;
                 case 1:
-                    Room2::play_game_scene(currentSeed + 1);
+                    Room2::play_game_scene(currentSeed + 1, score_manager);
                     break;
                 case 2:
-                    Room3::play_game_scene(currentSeed + 2);
+                    Room3::play_game_scene(currentSeed + 2, score_manager);
                     break;
                 default:
                     break;

@@ -1,5 +1,7 @@
 #include "../include/room1.h"
 #include "../include/heart_ui.h"
+#include "../include/score_manager.h"  // Include ScoreManager header
+
 
 #include "bn_core.h"
 #include "bn_keypad.h"
@@ -31,7 +33,7 @@
 
 namespace Room1 {
 
-    int play_game_scene(unsigned seed) {
+    int play_game_scene(unsigned seed, ScoreManager& score_manager) {
         bn::seed_random rng(seed); 
         bn::random rng_instance;
 
@@ -166,6 +168,7 @@ namespace Room1 {
                     cloak.update(lamb.get_sprite().position(), obstacles);
                     if (lamb.is_attacking_now() && atk_hitbox.collides(cloak.get_hitbox())) {
                         cloak.get_sprite().set_visible(false);
+                        score_manager.add_points(50);  // Add 50 points for defeating a Cloak
                     }
                     if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(cloak.get_hitbox())) {
                         player_health -= 0.5f;
@@ -179,6 +182,7 @@ namespace Room1 {
                     bat.update(lamb.get_sprite().position(), obstacles);
                     if (lamb.is_attacking_now() && atk_hitbox.collides(bat.get_hitbox())) {
                         bat.get_sprite().set_visible(false);
+                        score_manager.add_points(30);  // Add 30 points for defeating a Bat
                     }
                     if (damage_cooldown_frames <= 0 && !lamb.is_dashing_now() && lamb.get_hitbox().collides(bat.get_hitbox())) {
                         player_health -= 0.5f;
@@ -200,6 +204,7 @@ namespace Room1 {
 
                     if (lamb.is_attacking_now() && atk_hitbox.collides(worm.get_hitbox())) {
                         worm.get_sprite().set_visible(false);
+                        score_manager.add_points(40);  // Add 40 points for defeating a FireWorm
                     }
                 }
             }
@@ -211,6 +216,8 @@ namespace Room1 {
                     player_health = 3.0f;
                 }
             }
+             // Draw the score on screen (top-middle corner)
+            score_manager.draw_score(0, -70);
 
             bool all_defeated = true;
             for (const Bat& bat : bats) if (bat.get_sprite().visible()) all_defeated = false;
